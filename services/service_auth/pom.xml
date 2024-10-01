@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
 	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Reference to the global parent POM -->
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.pfemaroc</groupId>   <!-- Adjust this to match your global parent POM's groupId -->
+		<artifactId>global</artifactId>   <!-- Adjust this to match your global parent POM's artifactId -->
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath> <!-- Relative path to the global pom.xml -->
 	</parent>
+
+	<!-- Artifact Information for this microservice -->
 	<groupId>com.devsecops</groupId>
-	<artifactId>project</artifactId>
+	<artifactId>service_auth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>project</name>
-	<description>DevSecOps Project</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<name>service_auth</name>
+	<description>DevSecOps Authentication Service</description>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
+	<!-- Microservice-specific dependencies -->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -93,7 +88,6 @@
 			<artifactId>spring-security-crypto</artifactId>
 			<version>6.3.3</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
