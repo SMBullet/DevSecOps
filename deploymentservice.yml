@@ -14,6 +14,8 @@ spec:
       labels:
         app: pfe-maroc
     spec:
+      imagePullSecrets:
+      - name: docker-cred  
       containers:
       - name: pfe-maroc-container
         image: yassinom/pfe_maroc_archive:auth
