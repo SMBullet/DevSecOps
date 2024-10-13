@@ -45,7 +45,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    @GetMapping("/test")
+    @PostMapping("/test")
     public String testEndpoint() {
         return "Hello, this is a test!";
     }
