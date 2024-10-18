@@ -21,6 +21,7 @@ spec:
         image: yassinom/pfe_maroc_archive:auth
         ports:
         - containerPort: 5050
+          hostPort: 5050
 
 ---
 apiVersion: v1
