@@ -23,8 +23,6 @@ We followed the **Agile methodology** and managed the project through **Jira**.
 - [Security and Quality](#security-and-quality)
 - [Agile Approach](#agile-approach)
 - [Screenshots](#screenshots)
-- [How to Run Locally](#how-to-run-locally)
-- [License](#license)
 
 ---
 
