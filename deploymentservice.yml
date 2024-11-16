@@ -97,13 +97,13 @@ spec:
         - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: 2002
+          value: "2002"
         - name: MYSQL_DATABASE
-          value: authDB
+          value: "authDB"
         - name: MYSQL_USER
-          value: mehdi
+          value: "mehdi"
         - name: MYSQL_PASSWORD
-          value: 2002
+          value: "2002"
 
 # Auth Service
 ---
