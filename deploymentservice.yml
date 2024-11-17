@@ -193,7 +193,7 @@ spec:
         - containerPort: 5050
         env:
         - name: MYSQL_HOST
-          value: localhost
+          value: pfe-maroc-auth-service
         - name: MYSQL_DATABASE
           value: "authDB"
         - name: MYSQL_USER
