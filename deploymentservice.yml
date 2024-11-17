@@ -134,6 +134,7 @@ spec:
     port: 5050
     targetPort: 5050
 
+
 # MySQL Service
 ---
 apiVersion: v1
@@ -141,9 +142,9 @@ kind: Service
 metadata:
   name: pfe-maroc-mysql-service
 spec:
+  clusterIP: None
   selector:
     app: pfe-maroc-mysql
-  type: ClusterIP
   ports:
   - protocol: TCP
     port: 3306
