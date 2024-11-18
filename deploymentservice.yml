@@ -2,50 +2,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: PFEMaroc-auth-deployment
+  name: pfemaroc-auth-deployment
   labels:
-    app: PFEMaroc-auth
+    app: pfemaroc-auth
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: PFEMaroc-auth
+      app: pfemaroc-auth
   template:
     metadata:
       labels:
-        app: PFEMaroc-auth
+        app: pfemaroc-auth
     spec:
       imagePullSecrets:
       - name: docker-cred  
       containers:
-      - name: PFEMaroc-auth-container
+      - name: pfemaroc-auth-container
         image: yassinom/pfe_maroc_archive:auth
         ports:
         - containerPort: 5050
         env:
         - name: MYSQL_HOST
-          value: PFEMaroc-mysql-service
+          value: pfemaroc-mysql-service
 
 # MySQL Deployment
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: PFEMaroc-mysql-deployment
+  name: pfemaroc-mysql-deployment
   labels:
-    app: PFEMaroc-auth-mysql
+    app: pfemaroc-auth-mysql
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: PFEMaroc-auth-mysql
+      app: pfemaroc-auth-mysql
   template:
     metadata:
       labels:
-        app: PFEMaroc-auth-mysql
+        app: pfemaroc-auth-mysql
     spec:
       containers:
-      - name: PFEMaroc-auth-mysql
+      - name: pfemaroc-auth-mysql
         image: mysql:latest
         ports:
         - containerPort: 3306
@@ -65,11 +65,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: PFEMaroc-auth-service
+  name: pfemaroc-auth-service
 spec:
   clusterIP: None
   selector:
-    app: PFEMaroc-auth
+    app: pfemaroc-auth
   ports:
   - protocol: TCP
     port: 5050
@@ -82,11 +82,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: PFEMaroc-mysql-service
+  name: pfemaroc-mysql-service
 spec:
   clusterIP: None
   selector:
-    app: PFEMaroc-auth-mysql
+    app: pfemaroc-auth-mysql
   ports:
   - protocol: TCP
     port: 3306
@@ -101,21 +101,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: PFEMaroc-mysql-deployment2
+  name: pfemaroc-mysql-deployment2
   labels:
-    app: PFEMaroc-auth-mysql2
+    app: pfemaroc-auth-mysql2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: PFEMaroc-auth-mysql2
+      app: pfemaroc-auth-mysql2
   template:
     metadata:
       labels:
-        app: PFEMaroc-auth-mysql2
+        app: pfemaroc-auth-mysql2
     spec:
       containers:
-      - name: PFEMaroc-auth-mysql2
+      - name: pfemaroc-auth-mysql2
         image: mysql:latest
         ports:
         - containerPort: 3306
@@ -136,11 +136,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: PFEMaroc-mysql-service2
+  name: pfemaroc-mysql-service2
 spec:
   clusterIP: None
   selector:
-    app: PFEMaroc-auth-mysql2
+    app: pfemaroc-auth-mysql2
   ports:
   - protocol: TCP
     port: 3306
