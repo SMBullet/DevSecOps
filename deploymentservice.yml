@@ -1,111 +1,51 @@
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: pfe-maroc-deployment
-#   labels:
-#     app: pfe-maroc
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: pfe-maroc
-#   template:
-#     metadata:
-#       labels:
-#         app: pfe-maroc
-#     spec:
-#       imagePullSecrets:
-#       - name: docker-cred  
-#       containers:
-#       - name: pfe-maroc-container
-#         image: yassinom/pfe_maroc_archive:auth
-#         ports:
-#         - containerPort: 5050
-#           hostPort: 5050
-
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: pfe-maroc-service
-# spec:
-#   selector:
-#     app: pfe-maroc
-#   type: LoadBalancer
-#   ports:
-#   - protocol: TCP
-#     port: 5050
-#     targetPort: 5050
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Auth Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pfe-maroc-auth-deployment
+  name: PFEMaroc-auth-deployment
   labels:
-    app: pfe-maroc-auth
+    app: PFEMaroc-auth
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pfe-maroc-auth
+      app: PFEMaroc-auth
   template:
     metadata:
       labels:
-        app: pfe-maroc-auth
+        app: PFEMaroc-auth
     spec:
       imagePullSecrets:
       - name: docker-cred  
       containers:
-      - name: pfe-maroc-auth-container
+      - name: PFEMaroc-auth-container
         image: yassinom/pfe_maroc_archive:auth
         ports:
         - containerPort: 5050
         env:
         - name: MYSQL_HOST
-          value: pfe-maroc-mysql-service
+          value: PFEMaroc-mysql-service
 
 # MySQL Deployment
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pfe-maroc-mysql-deployment
+  name: PFEMaroc-mysql-deployment
   labels:
-    app: pfe-maroc-auth-mysql
+    app: PFEMaroc-auth-mysql
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pfe-maroc-auth-mysql
+      app: PFEMaroc-auth-mysql
   template:
     metadata:
       labels:
-        app: pfe-maroc-auth-mysql
+        app: PFEMaroc-auth-mysql
     spec:
       containers:
-      - name: pfe-maroc-auth-mysql
+      - name: PFEMaroc-auth-mysql
         image: mysql:latest
         ports:
         - containerPort: 3306
@@ -119,31 +59,17 @@ spec:
         - name: MYSQL_PASSWORD
           value: "2002"
 
-# # Auth Service
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: pfe-maroc-auth-service
-# spec:
-#   selector:
-#     app: pfe-maroc-auth
-#   type: ClusterIP
-#   ports:
-#   - protocol: TCP
-#     port: 5050
-#     targetPort: 5050
 
 # Auth Service (Headless)
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pfe-maroc-auth-service
+  name: PFEMaroc-auth-service
 spec:
   clusterIP: None
   selector:
-    app: pfe-maroc-auth
+    app: PFEMaroc-auth
   ports:
   - protocol: TCP
     port: 5050
@@ -156,11 +82,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pfe-maroc-mysql-service
+  name: PFEMaroc-mysql-service
 spec:
   clusterIP: None
   selector:
-    app: pfe-maroc-auth-mysql
+    app: PFEMaroc-auth-mysql
   ports:
   - protocol: TCP
     port: 3306
@@ -175,21 +101,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pfe-maroc-mysql-deployment2
+  name: PFEMaroc-mysql-deployment2
   labels:
-    app: pfe-maroc-auth-mysql2
+    app: PFEMaroc-auth-mysql2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pfe-maroc-auth-mysql2
+      app: PFEMaroc-auth-mysql2
   template:
     metadata:
       labels:
-        app: pfe-maroc-auth-mysql2
+        app: PFEMaroc-auth-mysql2
     spec:
       containers:
-      - name: pfe-maroc-auth-mysql2
+      - name: PFEMaroc-auth-mysql2
         image: mysql:latest
         ports:
         - containerPort: 3306
@@ -210,98 +136,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pfe-maroc-mysql-service2
+  name: PFEMaroc-mysql-service2
 spec:
   clusterIP: None
   selector:
-    app: pfe-maroc-auth-mysql2
+    app: PFEMaroc-auth-mysql2
   ports:
   - protocol: TCP
     port: 3306
     targetPort: 3306
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Auth and MySQL Combined Deployment
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: pfe-maroc-combined-deployment
-#   labels:
-#     app: pfe-maroc-combined
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: pfe-maroc-combined
-#   template:
-#     metadata:
-#       labels:
-#         app: pfe-maroc-combined
-#     spec:
-#       imagePullSecrets:
-#       - name: docker-cred  
-#       containers:
-#       - name: pfe-maroc-auth-container
-#         image: yassinom/pfe_maroc_archive:auth
-#         ports:
-#         - containerPort: 5050
-#         env:
-#         - name: MYSQL_HOST
-#           value: pfe-maroc-auth-service
-#         - name: MYSQL_DATABASE
-#           value: "authDB"
-#         - name: MYSQL_USER
-#           value: "mehdi"
-#         - name: MYSQL_PASSWORD
-#           value: "2002"
-#       - name: pfe-maroc-auth-mysql-container
-#         image: mysql:latest
-#         ports:
-#         - containerPort: 3306
-#         env:
-#         - name: MYSQL_ROOT_PASSWORD
-#           value: "2002"
-#         - name: MYSQL_DATABASE
-#           value: "authDB"
-#         - name: MYSQL_USER
-#           value: "mehdi"
-#         - name: MYSQL_PASSWORD
-#           value: "2002"
-
-# # Auth Service
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: pfe-maroc-auth-service
-# spec:
-#   selector:
-#     app: pfe-maroc-combined
-#   type: LoadBalancer
-#   ports:
-#   - protocol: TCP
-#     port: 5050
-#     targetPort: 5050
