@@ -93,16 +93,16 @@ kind: Deployment
 metadata:
   name: pfe-maroc-mysql-deployment
   labels:
-    app: pfe-maroc-mysql
+    app: pfe-maroc-auth-mysql
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pfe-maroc-mysql
+      app: pfe-maroc-auth-mysql
   template:
     metadata:
       labels:
-        app: pfe-maroc-mysql
+        app: pfe-maroc-auth-mysql
     spec:
       containers:
       - name: pfe-maroc-auth-mysql
@@ -144,11 +144,71 @@ metadata:
 spec:
   clusterIP: None
   selector:
-    app: pfe-maroc-mysql
+    app: pfe-maroc-auth-mysql
   ports:
   - protocol: TCP
     port: 3306
     targetPort: 3306
+
+
+
+
+
+# MySQL Deployment 2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pfe-maroc-mysql-deployment2
+  labels:
+    app: pfe-maroc-auth-mysql2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pfe-maroc-auth-mysql2
+  template:
+    metadata:
+      labels:
+        app: pfe-maroc-auth-mysql2
+    spec:
+      containers:
+      - name: pfe-maroc-auth-mysql2
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "2002"
+        - name: MYSQL_DATABASE
+          value: "authDB"
+        - name: MYSQL_USER
+          value: "mehdi"
+        - name: MYSQL_PASSWORD
+          value: "2002"
+
+
+
+# MySQL Service 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pfe-maroc-mysql-service2
+spec:
+  clusterIP: None
+  selector:
+    app: pfe-maroc-auth-mysql2
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
+
+
+
+
+
+
 
 
 
