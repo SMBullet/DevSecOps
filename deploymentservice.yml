@@ -1,3 +1,40 @@
+# # Auth Deployment
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: pfemaroc-auth-deployment
+#   labels:
+#     app: pfemaroc-auth
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: pfemaroc-auth
+#   template:
+#     metadata:
+#       labels:
+#         app: pfemaroc-auth
+#     spec:
+#       containers:
+#       - name: pfemaroc-auth-container
+#         image: yassinom/pfe_maroc_archive:auth
+#         imagePullPolicy: Always
+#         ports:
+#         - containerPort: 5050
+#         env:
+#         - name: MYSQL_HOST
+#           value: pfemaroc-mysql-service
+#         - name: MYSQL_ROOT_PASSWORD
+#           value: "2002"
+#         - name: MYSQL_DATABASE
+#           value: "authDB"
+#         - name: MYSQL_USER
+#           value: "mehdi"
+#         - name: MYSQL_PASSWORD
+#           value: "2002"
+
+
+
 # Auth Deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -15,8 +52,10 @@ spec:
       labels:
         app: pfemaroc-auth
     spec:
+      imagePullSecrets:
+      - name: docker-cred  
       containers:
-      - name: pfemaroc-auth-container
+      - name: pfe-maroc-auth-container
         image: yassinom/pfe_maroc_archive:auth
         imagePullPolicy: Always
         ports:
@@ -24,14 +63,13 @@ spec:
         env:
         - name: MYSQL_HOST
           value: pfemaroc-mysql-service
-        - name: MYSQL_ROOT_PASSWORD
-          value: "2002"
-        - name: MYSQL_DATABASE
-          value: "authDB"
-        - name: MYSQL_USER
-          value: "mehdi"
-        - name: MYSQL_PASSWORD
-          value: "2002"
+
+
+
+
+
+
+
 
 
 # MySQL Deployment
