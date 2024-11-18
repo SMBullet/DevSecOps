@@ -15,8 +15,6 @@ spec:
       labels:
         app: pfemaroc-auth
     spec:
-      imagePullSecrets:
-      - name: docker-cred  
       containers:
       - name: pfemaroc-auth-container
         image: yassinom/pfe_maroc_archive:auth
@@ -25,6 +23,15 @@ spec:
         env:
         - name: MYSQL_HOST
           value: pfemaroc-mysql-service
+        - name: MYSQL_ROOT_PASSWORD
+          value: "2002"
+        - name: MYSQL_DATABASE
+          value: "authDB"
+        - name: MYSQL_USER
+          value: "mehdi"
+        - name: MYSQL_PASSWORD
+          value: "2002"
+
 
 # MySQL Deployment
 ---
@@ -60,21 +67,21 @@ spec:
           value: "2002"
 
 
-# Auth Service (Headless)
+# Auth Service with NodePort (External Access)
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: pfemaroc-auth-service
 spec:
-  clusterIP: None
+  type: NodePort
   selector:
     app: pfemaroc-auth
   ports:
   - protocol: TCP
     port: 5050
     targetPort: 5050
-
+    nodePort: 30005  # Accessible on port 30005 on all nodes
 
 
 # MySQL Service
@@ -96,54 +103,55 @@ spec:
 
 
 
-# MySQL Deployment 2
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: pfemaroc-mysql-deployment2
-  labels:
-    app: pfemaroc-auth-mysql2
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: pfemaroc-auth-mysql2
-  template:
-    metadata:
-      labels:
-        app: pfemaroc-auth-mysql2
-    spec:
-      containers:
-      - name: pfemaroc-auth-mysql2
-        image: mysql:latest
-        ports:
-        - containerPort: 3306
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: "2002"
-        - name: MYSQL_DATABASE
-          value: "authDB"
-        - name: MYSQL_USER
-          value: "mehdi"
-        - name: MYSQL_PASSWORD
-          value: "2002"
+
+# # MySQL Deployment 2
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: pfemaroc-mysql-deployment2
+#   labels:
+#     app: pfemaroc-auth-mysql2
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: pfemaroc-auth-mysql2
+#   template:
+#     metadata:
+#       labels:
+#         app: pfemaroc-auth-mysql2
+#     spec:
+#       containers:
+#       - name: pfemaroc-auth-mysql2
+#         image: mysql:latest
+#         ports:
+#         - containerPort: 3306
+#         env:
+#         - name: MYSQL_ROOT_PASSWORD
+#           value: "2002"
+#         - name: MYSQL_DATABASE
+#           value: "authDB"
+#         - name: MYSQL_USER
+#           value: "mehdi"
+#         - name: MYSQL_PASSWORD
+#           value: "2002"
 
 
 
-# MySQL Service 2
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: pfemaroc-mysql-service2
-spec:
-  clusterIP: None
-  selector:
-    app: pfemaroc-auth-mysql2
-  ports:
-  - protocol: TCP
-    port: 3306
-    targetPort: 3306
+# # MySQL Service 2
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: pfemaroc-mysql-service2
+# spec:
+#   clusterIP: None
+#   selector:
+#     app: pfemaroc-auth-mysql2
+#   ports:
+#   - protocol: TCP
+#     port: 3306
+#     targetPort: 3306
 
 
