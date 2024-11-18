@@ -57,7 +57,7 @@ spec:
       containers:
       - name: pfe-maroc-auth-container
         image: yassinom/pfe_maroc_archive:auth
-        imagePullPolicy: Always
+        imagePullPolicy: Always  # mandatory, always pull the latest image
         ports:
         - containerPort: 5050
         env:
