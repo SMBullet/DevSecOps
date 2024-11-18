@@ -119,20 +119,36 @@ spec:
         - name: MYSQL_PASSWORD
           value: "2002"
 
-# Auth Service
+# # Auth Service
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: pfe-maroc-auth-service
+# spec:
+#   selector:
+#     app: pfe-maroc-auth
+#   type: ClusterIP
+#   ports:
+#   - protocol: TCP
+#     port: 5050
+#     targetPort: 5050
+
+# Auth Service (Headless)
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: pfe-maroc-auth-service
 spec:
+  clusterIP: None
   selector:
     app: pfe-maroc-auth
-  type: ClusterIP
   ports:
   - protocol: TCP
     port: 5050
     targetPort: 5050
+
 
 
 # MySQL Service
