@@ -34,6 +34,16 @@
 #           value: "2002"
 
 
+# PeerAuthentication for STRICT mTLS mode
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: default
+spec:
+  mtls:
+    mode: STRICT
+
 
 # Auth Deployment
 apiVersion: apps/v1
