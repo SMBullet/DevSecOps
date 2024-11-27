@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.devsecops</groupId>
-	<artifactId>project</artifactId>
+	<artifactId>service_auth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>project</name>
 	<description>DevSecOps Project</description>

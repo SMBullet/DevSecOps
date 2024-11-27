@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.pfemanager</groupId>
-    <artifactId>projectservice</artifactId>
+    <artifactId>service_project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>projectservice</name>
     <description>projectservice</description>
