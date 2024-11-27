@@ -1,6 +1,6 @@
-package com.devsecops.project.repository;
+package com.pfemanager.service_auth.repository;
 
-import com.devsecops.project.model.User;
+import com.pfemanager.service_auth.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

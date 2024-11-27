@@ -1,6 +1,6 @@
-package com.devsecops.project.dto;
+package com.pfemanager.service_auth.dto;
 
-import com.devsecops.project.enums.Role;
+import com.pfemanager.service_auth.enums.Role;
 import lombok.Data;
 
 import java.time.LocalDate;

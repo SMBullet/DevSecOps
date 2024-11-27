@@ -1,4 +1,4 @@
-package com.devsecops.project;
+package com.pfemanager.service_auth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

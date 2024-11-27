@@ -1,4 +1,4 @@
-package com.devsecops.project.enums;
+package com.pfemanager.service_auth.enums;
 
 public enum Role{
     STUDENT,

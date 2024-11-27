@@ -1,4 +1,4 @@
-package com.devsecops.project.response;
+package com.pfemanager.service_auth.response;
 
 import lombok.Data;
 

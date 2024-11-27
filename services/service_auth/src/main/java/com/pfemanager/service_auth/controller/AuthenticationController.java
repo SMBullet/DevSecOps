@@ -1,11 +1,11 @@
-package com.devsecops.project.controller;
+package com.pfemanager.service_auth.controller;
 
-import com.devsecops.project.dto.LoginUserDto;
-import com.devsecops.project.dto.RegisterUserDto;
-import com.devsecops.project.model.User;
-import com.devsecops.project.response.LoginResponse;
-import com.devsecops.project.service.AuthenticationService;
-import com.devsecops.project.service.JwtService;
+import com.pfemanager.service_auth.dto.LoginUserDto;
+import com.pfemanager.service_auth.dto.RegisterUserDto;
+import com.pfemanager.service_auth.model.User;
+import com.pfemanager.service_auth.response.LoginResponse;
+import com.pfemanager.service_auth.service.AuthenticationService;
+import com.pfemanager.service_auth.service.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final JwtService jwtService;
-
-
     private final AuthenticationService authenticationService;
 
 

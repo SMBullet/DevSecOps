@@ -1,4 +1,4 @@
-package com.devsecops.project.model;
+package com.pfemanager.service_auth.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -6,7 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.devsecops.project.enums.Role;
+import com.pfemanager.service_auth.enums.Role;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collection;

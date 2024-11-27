@@ -1,7 +1,7 @@
-package com.devsecops.project.controller;
+package com.pfemanager.service_auth.controller;
 
-import com.devsecops.project.model.User;
-import com.devsecops.project.service.UserService;
+import com.pfemanager.service_auth.model.User;
+import com.pfemanager.service_auth.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

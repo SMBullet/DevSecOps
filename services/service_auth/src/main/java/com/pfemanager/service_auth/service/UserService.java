@@ -1,8 +1,8 @@
-package com.devsecops.project.service;
+package com.pfemanager.service_auth.service;
 
 import org.springframework.stereotype.Service;
-import com.devsecops.project.repository.UserRepository;
-import com.devsecops.project.model.User;
+import com.pfemanager.service_auth.repository.UserRepository;
+import com.pfemanager.service_auth.model.User;
 import java.util.ArrayList;
 import java.util.List;
 

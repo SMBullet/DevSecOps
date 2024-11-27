@@ -1,4 +1,4 @@
-package com.devsecops.project.dto;
+package com.pfemanager.service_auth.dto;
 
 import lombok.Data;
 

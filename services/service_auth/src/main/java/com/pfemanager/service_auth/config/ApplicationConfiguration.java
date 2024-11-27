@@ -1,6 +1,6 @@
-package com.devsecops.project.config;
+package com.pfemanager.service_auth.config;
 
-import com.devsecops.project.repository.UserRepository;
+import com.pfemanager.service_auth.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

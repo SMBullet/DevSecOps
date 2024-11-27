@@ -1,9 +1,9 @@
-package com.devsecops.project.service;
+package com.pfemanager.service_auth.service;
 
-import com.devsecops.project.dto.LoginUserDto;
-import com.devsecops.project.dto.RegisterUserDto;
-import com.devsecops.project.model.User;
-import com.devsecops.project.repository.UserRepository;
+import com.pfemanager.service_auth.dto.LoginUserDto;
+import com.pfemanager.service_auth.dto.RegisterUserDto;
+import com.pfemanager.service_auth.model.User;
+import com.pfemanager.service_auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

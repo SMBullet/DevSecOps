@@ -1,6 +1,6 @@
-package com.devsecops.project.config;
+package com.pfemanager.service_auth.config;
 
-import com.devsecops.project.service.JwtService;
+import com.pfemanager.service_auth.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
