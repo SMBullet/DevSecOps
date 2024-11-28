@@ -5,6 +5,8 @@ import com.pfemanager.service_auth.repository.UserRepository;
 import com.pfemanager.service_auth.model.User;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -20,5 +22,9 @@ public class UserService {
         userRepository.findAll().forEach(users::add);
 
         return users;
+    }
+
+    public Optional<User> findById(UUID id){
+        return userRepository.findById(id);
     }
 }

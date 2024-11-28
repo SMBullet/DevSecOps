@@ -7,6 +7,7 @@ import com.pfemanager.projectservice.repositories.ProjectMemberRepository;
 import com.pfemanager.projectservice.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.pfemanager.projectservice.client.UserServiceClient;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +20,10 @@ public class ProjectMemberService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserServiceClient userServiceClient;
+
 
     public Project addProjectMember(ProjectMemberDto dto) {
         Project project = projectRepository.findById(dto.getProjectId())

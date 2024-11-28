@@ -12,6 +12,7 @@ import java.time.Period;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -29,7 +30,7 @@ public class User implements UserDetails {
             allocationSize = 1
     )
     @Column(nullable = false)
-    private Long id;
+    private UUID id;
     @Column(unique = true, nullable = false)
     private String username;
     @Column(nullable = false)
