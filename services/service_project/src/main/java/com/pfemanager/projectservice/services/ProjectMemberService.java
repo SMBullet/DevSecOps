@@ -1,6 +1,7 @@
 package com.pfemanager.projectservice.services;
 
 import com.pfemanager.projectservice.dto.ProjectMemberDto;
+import com.pfemanager.projectservice.dto.UserDto;
 import com.pfemanager.projectservice.models.Project;
 import com.pfemanager.projectservice.models.ProjectMember;
 import com.pfemanager.projectservice.repositories.ProjectMemberRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.pfemanager.projectservice.client.UserServiceClient;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,18 +27,22 @@ public class ProjectMemberService {
     private UserServiceClient userServiceClient;
 
 
-    public Project addProjectMember(ProjectMemberDto dto) {
-        Project project = projectRepository.findById(dto.getProjectId())
-                .orElse(null);
+    public Project addProjectMember(UUID projectId, UUID userId) {
 
-        ProjectMember member = new ProjectMember();
-        member.setProject(project);
-        member.setUserId(dto.getUserId());
-        member.setRole(dto.getRole());
-        projectMemberRepository.save(member);
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found with ID: " + projectId));
 
-        return project;
+
+        if (project.getProjectMembers().contains(userId)) {
+            throw new IllegalArgumentException("User is already a member of the project");
+        }
+
+
+        project.getProjectMembers().add(userId);
+        
+        return projectRepository.save(project);
     }
+
 
     public List<ProjectMember> getProjectMembersByProject(UUID projectId) {
         return projectMemberRepository.findAllByProjectId(projectId);

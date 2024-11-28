@@ -1,10 +1,12 @@
 package com.pfemanager.projectservice.models;
 
+import com.pfemanager.projectservice.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,9 +28,9 @@ public class Project {
     @Column(name = "description", length = 500)
     private String description;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProjectMember> projectMembers;
+    @ElementCollection
+    @Column(name ="projectMembers", nullable = true)
+    private List<UUID> projectMembers = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private ProjectStatus status = ProjectStatus.IN_PROGRESS;
