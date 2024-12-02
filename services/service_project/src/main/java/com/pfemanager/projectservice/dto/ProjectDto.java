@@ -1,5 +1,6 @@
 package com.pfemanager.projectservice.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Data
-public class ProjectCreationDto {
+@Builder
+public class ProjectDto {
     private String title;
     private String description;
     private String location;

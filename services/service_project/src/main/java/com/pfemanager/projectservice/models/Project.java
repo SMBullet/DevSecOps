@@ -1,9 +1,7 @@
 package com.pfemanager.projectservice.models;
 
-import com.pfemanager.projectservice.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,5 +53,7 @@ public class Project {
 
     @Column(name = "university_id", nullable = false)
     private UUID universityId;
+
+
 
 }

@@ -1,6 +1,6 @@
 package com.pfemanager.projectservice.controllers;
 
-import com.pfemanager.projectservice.dto.ProjectCreationDto;
+import com.pfemanager.projectservice.dto.ProjectDto;
 import com.pfemanager.projectservice.models.Project;
 import com.pfemanager.projectservice.models.ProjectStatus;
 import com.pfemanager.projectservice.services.ProjectService;
@@ -21,7 +21,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     @PostMapping("/createproject")
-    public ResponseEntity<Project> createProject(@RequestBody ProjectCreationDto projectCreationDto) {
+    public ResponseEntity<Project> createProject(@RequestBody ProjectDto projectCreationDto) {
         Project createdProject = projectService.createProject(projectCreationDto);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
