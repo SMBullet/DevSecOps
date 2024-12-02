@@ -1,5 +1,6 @@
 package com.pfemanager.projectservice.dto;
 
+import com.pfemanager.projectservice.models.ProjectStatus;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class ProjectDto {
     private String subject;
     private UUID universityId;
     private String reportUrl;
+    private ProjectStatus status;
 
     private List<UUID> projectMembers;
 
