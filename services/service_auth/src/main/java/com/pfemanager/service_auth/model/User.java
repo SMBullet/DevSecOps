@@ -9,10 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.pfemanager.service_auth.enums.Role;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Data
 @Entity
@@ -36,6 +33,10 @@ public class User implements UserDetails {
     private Role role;
     @Transient
     private Integer age;
+
+    @ElementCollection
+    @Column(name ="projects", nullable = true)
+    private List<UUID> projects = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
