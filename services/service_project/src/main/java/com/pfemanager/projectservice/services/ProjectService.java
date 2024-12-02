@@ -59,6 +59,7 @@ public class ProjectService{
                 .universityId(project.getUniversityId())
                 .reportUrl(project.getReportUrl())
                 .projectMembers(project.getProjectMembers())
+                .status(project.getStatus())
                 .build();
 
         return ProjectDetailsDto.builder()
@@ -73,14 +74,15 @@ public class ProjectService{
         return projectRepository.findAll();
     }
 
-    public ProjectDetailsDto updateProjectStatus(UUID id, ProjectStatus status) {
-        ProjectDetailsDto project = getProject(id);
+    public Project updateProjectStatus(UUID id, ProjectStatus status) {
+        Project project = projectRepository.findById(id)
+                        .orElseThrow();
         project.setStatus(status);
         return projectRepository.save(project);
     }
 
     public void deleteProject(UUID id){
-        Project project = getProject(id);
-        projectRepository.delete(project);
+
+        projectRepository.deleteById(id);
     }
 }
