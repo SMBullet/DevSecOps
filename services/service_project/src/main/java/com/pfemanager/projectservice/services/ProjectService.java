@@ -42,7 +42,7 @@ public class ProjectService{
         return project;
     }
 
-    public Project getProject(UUID id) {
+    public ProjectDetailsDto getProject(UUID id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow();
         List<UserDto> projectMembers = project.getProjectMembers().stream()
@@ -61,11 +61,11 @@ public class ProjectService{
                 .projectMembers(project.getProjectMembers())
                 .build();
 
-             ProjectDetailsDto.builder()
+        return ProjectDetailsDto.builder()
                 .projectDto(projectDto)
                 .members(projectMembers)
                 .build();
-             return ProjectDetailsDto;
+
 
     }
 
@@ -73,8 +73,8 @@ public class ProjectService{
         return projectRepository.findAll();
     }
 
-    public Project updateProjectStatus(UUID id, ProjectStatus status) {
-        Project project = getProject(id);
+    public ProjectDetailsDto updateProjectStatus(UUID id, ProjectStatus status) {
+        ProjectDetailsDto project = getProject(id);
         project.setStatus(status);
         return projectRepository.save(project);
     }
