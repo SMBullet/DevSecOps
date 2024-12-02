@@ -34,7 +34,7 @@ public class UserService {
 
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .projects(projects)
+                .projects(user.getProjects())
                 .build();
 
         return UserDetailsDto.builder()
