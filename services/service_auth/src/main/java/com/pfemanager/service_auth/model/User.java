@@ -20,15 +20,7 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "seqgen"
-    )
-    @SequenceGenerator(
-            name="seqgen",
-            sequenceName="user_sequence",
-            allocationSize = 1
-    )
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
     @Column(unique = true, nullable = false)

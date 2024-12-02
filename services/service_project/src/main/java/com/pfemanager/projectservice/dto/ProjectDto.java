@@ -1,6 +1,5 @@
 package com.pfemanager.projectservice.dto;
 
-import com.pfemanager.projectservice.models.ProjectMemberRole;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +20,7 @@ public class ProjectCreationDto {
     private UUID universityId;
     private String reportUrl;
 
-    private List<ProjectMemberDto> projectMembers;
+    private List<UUID> projectMembers;
 
 
 }
