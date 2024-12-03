@@ -1,6 +1,7 @@
 package com.pfemanager.service_auth.controller;
 
 import com.pfemanager.service_auth.dto.AuthenticatedUserDto;
+import com.pfemanager.service_auth.dto.UserDetailsDto;
 import com.pfemanager.service_auth.dto.UserDto;
 import com.pfemanager.service_auth.model.User;
 import com.pfemanager.service_auth.service.UserService;
@@ -26,14 +27,14 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<AuthenticatedUserDto> authenticatedUser() {
+    public ResponseEntity<UserDetailsDto> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User currentUser = (User) authentication.getPrincipal();
 
-        AuthenticatedUserDto authenticatedUserDto = new AuthenticatedUserDto(currentUser);
+        UserDetailsDto userDetailsDto = userService.getUser(currentUser.getId());
 
-        return ResponseEntity.ok(authenticatedUserDto);
+        return ResponseEntity.ok(userDetailsDto);
     }
 
     @GetMapping("/")

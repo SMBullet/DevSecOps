@@ -20,7 +20,6 @@ public class ProjectDto {
     private String location;
     private LocalDateTime projectTime;
     private String subject;
-    private UUID universityId;
     private String reportUrl;
     private ProjectStatus status;
 

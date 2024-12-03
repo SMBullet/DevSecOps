@@ -31,7 +31,6 @@ public class ProjectService{
         project.setDescription(dto.getDescription());
         project.setLocation(dto.getLocation());
         project.setSubject(dto.getSubject());
-        project.setUniversityId(dto.getUniversityId());
         project.setCreatedAt(LocalDateTime.now());
         project.setProjectTime(dto.getProjectTime());
         project.setProjectMembers(dto.getProjectMembers());
@@ -56,7 +55,6 @@ public class ProjectService{
                 .location(project.getLocation())
                 .projectTime(project.getProjectTime())
                 .subject(project.getSubject())
-                .universityId(project.getUniversityId())
                 .reportUrl(project.getReportUrl())
                 .projectMembers(project.getProjectMembers())
                 .status(project.getStatus())

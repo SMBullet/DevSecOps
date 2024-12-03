@@ -1,5 +1,6 @@
 package com.pfemanager.projectservice.controllers;
 
+import com.pfemanager.projectservice.dto.ProjectDetailsDto;
 import com.pfemanager.projectservice.dto.ProjectDto;
 import com.pfemanager.projectservice.models.Project;
 import com.pfemanager.projectservice.models.ProjectStatus;
@@ -27,8 +28,8 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getProject(@PathVariable UUID id) {
-        Project project = projectService.getProject(id);
+    public ResponseEntity<ProjectDetailsDto> getProject(@PathVariable UUID id) {
+        ProjectDetailsDto project = projectService.getProject(id);
         if (project == null) {
             return ResponseEntity.notFound().build();
         }

@@ -26,7 +26,7 @@ public class Project {
     @Column(name = "description", length = 500)
     private String description;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name ="projectMembers", nullable = true)
     private List<UUID> projectMembers = new ArrayList<>();
 
@@ -51,8 +51,6 @@ public class Project {
     @Column(name = "report_url", nullable = true)
     private String reportUrl;
 
-    @Column(name = "university_id", nullable = false)
-    private UUID universityId;
 
 
 

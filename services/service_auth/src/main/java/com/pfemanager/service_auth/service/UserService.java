@@ -39,7 +39,7 @@ public class UserService {
 
         return UserDetailsDto.builder()
                 .user(userDto)
-                .projects(projects)
+                .projectDetails(projects)
                 .build();
     }
 
