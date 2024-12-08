@@ -52,6 +52,14 @@ public class UserController {
         return  ResponseEntity.ok(userDto);
     }
 
+    @GetMapping("/project/{id}")
+    public ResponseEntity<UserforProjectDto> findUserbyId(@PathVariable UUID id){
+        User user = userService.findById(id)
+                .orElseThrow();
+        UserforProjectDto userforProjectDto = new UserforProjectDto(user);
+        return ResponseEntity.ok(userforProjectDto);
+    }
+
     @GetMapping("/teacher")
     public String teacher(){
         return "This is the teacher page";
