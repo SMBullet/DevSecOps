@@ -21,7 +21,7 @@ public class UserServiceClient {
     }
 
     public UserDto getUserById(UUID id) {
-        String url = userServiceUrl + "/users/" + id;
+        String url = userServiceUrl + "/" + id;
         try {
             return restTemplate.getForObject(url, UserDto.class);
         } catch (HttpClientErrorException.NotFound e) {
