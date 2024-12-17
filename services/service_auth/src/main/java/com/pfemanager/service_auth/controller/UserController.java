@@ -1,6 +1,7 @@
 package com.pfemanager.service_auth.controller;
 
 import com.pfemanager.service_auth.dto.AuthenticatedUserDto;
+import com.pfemanager.service_auth.dto.UserforProjectDto;
 import com.pfemanager.service_auth.dto.UserDetailsDto;
 import com.pfemanager.service_auth.dto.UserDto;
 import com.pfemanager.service_auth.model.User;
@@ -8,12 +9,10 @@ import com.pfemanager.service_auth.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,6 +57,15 @@ public class UserController {
                 .orElseThrow();
         UserforProjectDto userforProjectDto = new UserforProjectDto(user);
         return ResponseEntity.ok(userforProjectDto);
+    }
+
+    @PostMapping("/add-project")
+    public ResponseEntity<UserDto> addProjectToUser(@RequestBody Map<String, String> payload) {
+        UUID userId = UUID.fromString(payload.get("userId"));
+        UUID projectId = UUID.fromString(payload.get("projectId"));
+
+        User updatedUser = userService.addProjectToUser(userId, projectId);
+        return ResponseEntity.ok(new UserDto(updatedUser));
     }
 
     @GetMapping("/teacher")

@@ -4,6 +4,7 @@ import com.pfemanager.service_auth.client.ProjectServiceClient;
 import com.pfemanager.service_auth.dto.ProjectDto;
 import com.pfemanager.service_auth.dto.UserDetailsDto;
 import com.pfemanager.service_auth.dto.UserDto;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import com.pfemanager.service_auth.repository.UserRepository;
 import com.pfemanager.service_auth.model.User;
@@ -49,6 +50,18 @@ public class UserService {
         userRepository.findAll().forEach(users::add);
 
         return users;
+    }
+
+    public User addProjectToUser(UUID userId, UUID projectId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (!user.getProjects().contains(projectId)) {
+            user.getProjects().add(projectId);
+            return userRepository.save(user);
+        }
+
+        return user;
     }
 
     public Optional<User> findById(UUID id){
