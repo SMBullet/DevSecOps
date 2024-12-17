@@ -58,14 +58,49 @@ module.exports = {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+  			'custom-blue': '#4F46E5',
+  			'custom-purple': '#7C3AED',
+  			'custom-pink': '#EC4899',
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		  fontFamily: {
+			'literata': ['Literata-Regular'],
+			'inter': ['Inter-Medium'],
+			'gt-walsheim': ['GT Walsheim Pro', 'sans-serif'],
+			'oliver': ['Oliver-Regular'],
+		  },
+		  fontWeight: {
+			'ultrabold': 900,
+		  },
+		  keyframes: {
+			float: {
+			  '0%, 100%': { transform: 'translateY(0)' },
+			  '50%': { transform: 'translateY(-10px)' },
+			},
+			scroll:{
+				'0%': { transform: 'translateX(0)' },
+          		'100%': { transform: 'translateX(-50%)' },
+			}
+		  },
+		  animation: {
+			'float': 'float 3s ease-in-out infinite',
+			'scroll': 'scroll 40s linear infinite',
+		  }
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+	function({ addUtilities }) {
+		addUtilities({
+		  '.pause': {
+			'animation-play-state': 'paused',
+		  }
+		})
+	  }
+	],
+  
 };

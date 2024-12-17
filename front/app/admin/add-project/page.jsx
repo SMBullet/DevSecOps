@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -37,6 +38,8 @@ export default function AddProjectPage() {
 
   const { control, handleSubmit, formState: { errors } } = form;
 
+  const [focusedField, setFocusedField] = useState(null);
+
   const onSubmit = (data) => {
     console.log(data);
     // Handle form submission logic here
@@ -66,11 +69,13 @@ export default function AddProjectPage() {
                     <FormLabel className="font-semibold text-gray-700">Title</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Clipboard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Clipboard className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${focusedField === 'title' ? 'font-bold' : ''}`} />
                         <Input
                           placeholder="Enter project title"
                           {...field}
                           className="pl-10"
+                          onFocus={() => setFocusedField('title')}
+                          onBlur={() => setFocusedField(null)}
                         />
                       </div>
                     </FormControl>
@@ -91,11 +96,13 @@ export default function AddProjectPage() {
                     <FormLabel className="font-semibold text-gray-700">Supervisor</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${focusedField === 'supervisor' ? 'font-bold' : ''}`} />
                         <Input
                           placeholder="Enter supervisor name"
                           {...field}
                           className="pl-10"
+                          onFocus={() => setFocusedField('supervisor')}
+                          onBlur={() => setFocusedField(null)}
                         />
                       </div>
                     </FormControl>
@@ -116,11 +123,13 @@ export default function AddProjectPage() {
                     <FormLabel className="font-semibold text-gray-700">Student</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${focusedField === 'student' ? 'font-bold' : ''}`} />
                         <Input
                           placeholder="Enter student name"
                           {...field}
                           className="pl-10"
+                          onFocus={() => setFocusedField('student')}
+                          onBlur={() => setFocusedField(null)}
                         />
                       </div>
                     </FormControl>
@@ -141,11 +150,13 @@ export default function AddProjectPage() {
                     <FormLabel className="font-semibold text-gray-700">Date</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Calendar className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${focusedField === 'date' ? 'font-bold' : ''}`} />
                         <Input
                           placeholder="Enter project date"
                           {...field}
                           className="pl-10"
+                          onFocus={() => setFocusedField('date')}
+                          onBlur={() => setFocusedField(null)}
                         />
                       </div>
                     </FormControl>
@@ -166,11 +177,13 @@ export default function AddProjectPage() {
                     <FormLabel className="font-semibold text-gray-700">Room</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <MapPin className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${focusedField === 'room' ? 'font-bold' : ''}`} />
                         <Input
                           placeholder="Enter room number"
                           {...field}
                           className="pl-10"
+                          onFocus={() => setFocusedField('room')}
+                          onBlur={() => setFocusedField(null)}
                         />
                       </div>
                     </FormControl>
@@ -191,11 +204,13 @@ export default function AddProjectPage() {
                     <FormLabel className="font-semibold text-gray-700">Enterprise</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Briefcase className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${focusedField === 'entreprise' ? 'font-bold' : ''}`} />
                         <Input
                           placeholder="Enter enterprise name"
                           {...field}
                           className="pl-10"
+                          onFocus={() => setFocusedField('entreprise')}
+                          onBlur={() => setFocusedField(null)}
                         />
                       </div>
                     </FormControl>
@@ -216,11 +231,13 @@ export default function AddProjectPage() {
                     <FormLabel className="font-semibold text-gray-700">Degree</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Award className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Award className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${focusedField === 'degree' ? 'font-bold' : ''}`} />
                         <Input
                           placeholder="Enter degree"
                           {...field}
                           className="pl-10"
+                          onFocus={() => setFocusedField('degree')}
+                          onBlur={() => setFocusedField(null)}
                         />
                       </div>
                     </FormControl>

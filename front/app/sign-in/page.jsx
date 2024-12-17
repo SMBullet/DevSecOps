@@ -1,34 +1,349 @@
-function page() {
+'use client';
 
+import * as React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// LoginPage Component
+export default function LoginPage() {
+  const [isResetPassword, setIsResetPassword] = React.useState(false);
 
   return (
-    
-      <div className='bg-[#1A1A1B] h-screen flex justify-center items-center overflow-hidden relative'>
-        <div className='absolute w-[120px] h-[120px] blur-3xl rounded-full bg-[#555555] -top-0 -right-0 lg:w-[450px] lg:h-[450px] lg:-top-40 lg:-right-32'></div>
-        <div className='absolute w-[120px] h-[120px] blur-3xl rounded-full bg-[#555555] -bottom-0 -left-0 lg:w-[450px] lg:h-[450px] lg:-bottom-40 lg:-left-32'></div>
-        <div className='flex flex-col text-center gap-2 text-white mx-auto'>
-          <h1 className='text-3xl md:text-4xl'>Yoo, welcome back!</h1>
-          <p className='text-xs'><span className='text-[#8F8F91]'>First time here?</span> Sign up for free</p>
-          <form action="#" className='flex flex-col gap-3 my-5 mx-6 lg:mx-0'>
-            <input type="text" name="" placeholder='Your email' className='rounded-xl  p-2 pl-5 bg-[#1C1C1E] border border-[#2C2B2E] placeholder:text-[#8F8F91]'/>
-            <input type="password" name=""  placeholder='**********' className='rounded-xl p-2 pl-5  bg-[#1C1C1E] border border-[#2C2B2E] placeholder:text-[#8F8F91]'/>
-            <button className='rounded-xl bg-white text-black p-2'>Sign in</button>
-          </form>
-          <p className='text-xs mb-10'>Sign in using magic link</p>
-          <div className='flex justify-between items-center'>
-            <div className='h-0.5 w-36 bg-[#2C2B2E]'></div>
-            <p className='text-[#8F8F91] mx-4 text-xs'>or</p>
-            <div className='h-0.5 w-36 bg-[#2C2B2E]'></div>
-          </div>
-          <button className='rounded-xl bg-[#1C1C1E] border border-[#2C2B2E] text-white p-2 mt-2'>Single sign-on (SSO)</button>
-          
-          <p className='text-xs text-[#87878A] max-w-xs text-center mx-auto  px-5 lg:mt-10'>You acknowledge that you read, and agree, to our <span className='underline'>Terms of Service</span> and our <span className='underline'>Privacy Policy</span>.</p>
+    <main className="min-h-screen bg-[#EEE9DF] flex flex-col lg:flex-row overflow-hidden relative">
+      {/* Static image section with basketball bounce animation */}
+      <motion.div 
+        initial={{ x: -400, y: -400, opacity: 0 }}
+        animate={{ x: 0, y: 0, opacity: 1 }}
+        transition={{ 
+          y: {
+            type: "spring",
+            stiffness: 100,
+            damping: 5,
+            mass: 1,
+            duration: 2
+          },
+          x: {
+            type: "spring",
+            stiffness: 200,
+            damping: 15,
+            duration: 1
+          },
+          opacity: {
+            duration: 0.5
+          }
+        }}
+        className="w-full lg:w-1/2 flex items-center justify-center lg:mt-0 -mb-8 lg:mb-0"
+      >
+        <div className="flex flex-col w-full max-w-[622px]">
+          <img
+            loading="lazy"
+            src="https://cdn.builder.io/api/v1/image/assets/TEMP/f6afe41a4703fa7a86f6a0daa7beaf138ce6cb6676411ecdf1c3ec03402c0527"
+            alt=""
+            className="w-full aspect-square object-contain lg:-mt-60"
+          />
         </div>
-      </div>
-        
-      
-    
-  )
+      </motion.div>
+
+      {/* Forms section with simple fade transition */}
+      <motion.div 
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ 
+          type: "spring",
+          stiffness: 100,
+          damping: 20,
+          duration: 0.6,
+          delay: 0.2
+        }}
+        className="w-full lg:w-1/2 flex items-center justify-center px-4 lg:px-0 lg:py-0"
+      >
+        <AnimatePresence mode="wait">
+          {!isResetPassword ? (
+            <motion.div
+              key="login"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <LoginForm onForgotPassword={() => setIsResetPassword(true)} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="reset"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ResetPasswordForm onBack={() => setIsResetPassword(false)} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </main>
+  );
 }
 
-export default page
+// Divider Component
+function Divider({ text }) {
+  return (
+    <div className="flex items-center">
+      <div className="shrink-0 h-px border border-solid border-zinc-800" />
+      <span className="px-2 text-neutral-400">{text}</span>
+      <div className="shrink-0 h-px border border-solid border-zinc-800" />
+    </div>
+  );
+}
+
+// Updated Checkbox Component
+function Checkbox({ label }) {
+  return (
+    <label className="flex gap-2 items-center text-sm text-gray-600 cursor-pointer">
+      <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
+      <span>{label}</span>
+    </label>
+  );
+}
+
+// Updated InputField Component
+function InputField({ type, id, placeholder, "aria-label": ariaLabel }) {
+  return (
+    <div className="mt-8">
+      <label htmlFor={id} className="sr-only">{ariaLabel}</label>
+      <input
+        type={type}
+        id={id}
+        placeholder={placeholder}
+        aria-label={ariaLabel}
+        className="w-full px-6 py-4 rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 text-lg transition-all focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+      />
+    </div>
+  );
+}
+
+// Updated GoogleButton Component
+function GoogleButton() {
+  return (
+    <button 
+      type="button" 
+      
+      className="w-full flex items-center justify-center gap-3 px-6 py-4 mt-6 text-white rounded-xl border bg-gray-900 hover:bg-[#4A3E3E] text-lg font-medium"
+    >
+      <img
+        loading="lazy"
+        src="https://cdn.builder.io/api/v1/image/assets/TEMP/92b1215a7b4b4f42d1da0cb321f7f35e3ef4eea4e81e1aaf4ae255988e831bfc"
+        alt=""
+        className="w-6 h-6"
+      />
+      <span>Log in with Google</span>
+    </button>
+  );
+}
+
+// Updated LoginForm Component
+function LoginForm({ onForgotPassword }) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const formVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0
+    }
+  };
+
+  return (
+    <motion.form 
+      onSubmit={handleSubmit} 
+      className="bg-[#FBF9F5] rounded-[32px] p-6 lg:p-16 shadow-[0_4px_24px_rgba(0,0,0,0.04)] w-full max-w-[580px] mx-auto font-gt-alpina"
+      variants={formVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.h1 
+        variants={itemVariants}
+        className="text-4xl font-semibold text-center text-gray-900 tracking-tight"
+      >
+        Welcome Back!
+      </motion.h1>
+      <motion.p 
+        variants={itemVariants}
+        className="mt-3 text-lg text-center text-gray-600"
+      >
+        Please enter your details
+      </motion.p>
+      
+      <div className="mt-12 space-y-8">
+        <InputField
+          type="email"
+          id="email"
+          placeholder="Your email"
+          aria-label="Email address"
+        />
+        
+        <InputField
+          type="password"
+          id="password"
+          placeholder="************"
+          aria-label="Password"
+        />
+      </div>
+      
+      <div className="flex justify-between items-center mt-8">
+        <label className="flex gap-3 items-center text-base text-gray-600 cursor-pointer group">
+          <div className="relative flex items-center justify-center">
+            <input 
+              type="checkbox" 
+              className="w-5 h-5 rounded-md border-2 border-gray-300 appearance-none checked:bg-gray-900 checked:border-gray-900 transition-all cursor-pointer"
+            />
+            <svg 
+              className="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 [input:checked+&]:opacity-100" 
+              viewBox="0 0 12 12" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                d="M10 3L4.5 8.5L2 6" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <span>Remember for 30 days</span>
+        </label>
+        <button 
+          type="button" 
+          onClick={onForgotPassword}
+          className="text-base text-gray-600 hover:text-gray-900 transition-colors duration-200 h-fit"
+        >
+          Forgot Password?
+        </button>
+      </div>
+
+      <button 
+        type="submit" 
+        className="w-full px-6 py-4 mt-10 text-white bg-gray-900 rounded-xl text-lg font-medium hover:bg-gray-800 transition-all duration-200 hover:shadow-lg"
+      >
+        Log in
+      </button>
+
+      <div className="relative mt-10">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-base">
+          <span className="px-6 text-gray-500 bg-[#FBF9F5]">or</span>
+        </div>
+      </div>
+
+      <GoogleButton />
+
+      <p className="mt-12 text-base text-center text-gray-500 leading-relaxed">
+        You acknowledge that you read, and agree, to our{" "}
+        <a href="#" className="text-gray-900 hover:underline font-medium">Terms of Service</a> and our{" "}
+        <a href="#" className="text-gray-900 hover:underline font-medium">Privacy Policy</a>.
+      </p>
+    </motion.form>
+  );
+}
+
+// Add the ResetPasswordForm component
+function ResetPasswordForm({ onBack }) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const formVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0
+    }
+  };
+
+  return (
+    <motion.form 
+      onSubmit={handleSubmit} 
+      className="bg-[#FBF9F5] rounded-[32px] p-6 lg:p-16 shadow-[0_4px_24px_rgba(0,0,0,0.04)] w-full max-w-[580px] mx-auto font-gt-alpina"
+      variants={formVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.h1 
+        variants={itemVariants}
+        className="text-4xl font-semibold text-center text-gray-900 tracking-tight"
+      >
+        Reset Password
+      </motion.h1>
+      <motion.p 
+        variants={itemVariants}
+        className="mt-3 text-lg text-center text-gray-600"
+      >
+        Enter your email to reset your password
+      </motion.p>
+      
+      <div className="mt-12">
+        <InputField
+          type="email"
+          id="reset-email"
+          placeholder="Your email"
+          aria-label="Email address"
+        />
+      </div>
+
+      <button 
+        type="submit" 
+        className="w-full px-6 py-4 mt-10 text-white bg-gray-900 rounded-xl text-lg font-medium hover:bg-gray-800 transition-all duration-200 hover:shadow-lg"
+      >
+        Send Reset Link
+      </button>
+
+      <button 
+        type="button" 
+        onClick={onBack}
+        className="w-full px-6 py-4 mt-4 text-gray-900 border border-gray-200 rounded-xl text-lg font-medium hover:bg-gray-50 transition-all duration-200"
+      >
+        Back to Login
+      </button>
+
+      <p className="mt-12 text-base text-center text-gray-500 leading-relaxed">
+        Remember your password?{" "}
+        <button
+          type="button"
+          onClick={onBack}
+          className="text-gray-900 hover:underline font-medium"
+        >
+          Log in
+        </button>
+      </p>
+    </motion.form>
+  );
+}

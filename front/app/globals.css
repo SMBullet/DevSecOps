@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Poppins, 'GT Walsheim Pro', 'GT Walsheim', 'Oliver';
 }
+@import url('https://fonts.googleapis.com/css2?family=Literata:wght@400;500;600&display=swap');
 
 @layer base {
   :root {
@@ -77,12 +78,42 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+/* Add to your global CSS */
+.dropdown-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 
-@layer base {
-  * {
-    @apply border-border;
+.dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+@font-face {
+  font-family: 'GT Walsheim Pro';
+  src: url('/fonts/GT-Walsheim-Condensed-Ultra-Bold-Oblique-Trial-BF651b7fc70416e') format('otf');
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Oliver';
+  src: url('/fonts/Oliver-Regular.ttf') format('ttf');
+  font-weight: 400;
+  font-style: normal;
+}
+@keyframes float {
+  0% {
+    transform: translateY(0px);
   }
-  body {
-    @apply bg-background text-foreground;
+  50% {
+    transform: translateY(-10px);
   }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
