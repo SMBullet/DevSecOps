@@ -1,12 +1,12 @@
 # PeerAuthentication for STRICT mTLS mode
-apiVersion: security.istio.io/v1beta1
-kind: PeerAuthentication
-metadata:
-  name: default
-  namespace: default
-spec:
-  mtls:
-    mode: STRICT
+# apiVersion: security.istio.io/v1beta1
+# kind: PeerAuthentication
+# metadata:
+#   name: default
+#   namespace: default
+# spec:
+#   mtls:
+#     mode: STRICT
 
 
 # Auth Deployment
@@ -27,31 +27,67 @@ spec:
         app: pfemaroc-auth
     spec:
       imagePullSecrets:
-      - name: docker-cred  
+      - name: docker-cred
       containers:
-      - name: pfe-maroc-auth-container
-        image: yassinom/pfe_maroc_archive:auth
-        imagePullPolicy: Always  # mandatory, always pull the latest image
+      - name: pfemaroc-auth-container
+        image: yassinom/pfe_maroc_archive:service_auth
+        imagePullPolicy: Always
         ports:
         - containerPort: 5050
         env:
         - name: MYSQL_HOST
-          value: pfemaroc-mysql-service
+          value: pfemaroc-auth-mysql-service
+        - name: MYSQL_DATABASE
+          value: "authDB"
+        - name: MYSQL_USER
+          value: "mehdi"
+        - name: MYSQL_PASSWORD
+          value: "2002"
 
-
-
-
-
-
-
-
-
-# MySQL Deployment
 ---
+
+# Project Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pfemaroc-mysql-deployment
+  name: pfemaroc-project-deployment
+  labels:
+    app: pfemaroc-project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pfemaroc-project
+  template:
+    metadata:
+      labels:
+        app: pfemaroc-project
+    spec:
+      imagePullSecrets:
+      - name: docker-cred
+      containers:
+      - name: pfemaroc-project-container
+        image: yassinom/pfe_maroc_archive:service_project
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6060
+        env:
+        - name: MYSQL_HOST
+          value: pfemaroc-project-mysql-service
+        - name: MYSQL_DATABASE
+          value: "projectDB"
+        - name: MYSQL_USER
+          value: "mehdi"
+        - name: MYSQL_PASSWORD
+          value: "2002"
+
+---
+
+# Auth MySQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pfemaroc-auth-mysql-deployment
   labels:
     app: pfemaroc-auth-mysql
 spec:
@@ -79,9 +115,43 @@ spec:
         - name: MYSQL_PASSWORD
           value: "2002"
 
-
-# Auth Service with NodePort (External Access)
 ---
+
+# Project MySQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pfemaroc-project-mysql-deployment
+  labels:
+    app: pfemaroc-project-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pfemaroc-project-mysql
+  template:
+    metadata:
+      labels:
+        app: pfemaroc-project-mysql
+    spec:
+      containers:
+      - name: pfemaroc-project-mysql
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "2002"
+        - name: MYSQL_DATABASE
+          value: "projectDB"
+        - name: MYSQL_USER
+          value: "mehdi"
+        - name: MYSQL_PASSWORD
+          value: "2002"
+
+---
+
+# Auth Service (NodePort for External Access)
 apiVersion: v1
 kind: Service
 metadata:
@@ -94,19 +164,52 @@ spec:
   - protocol: TCP
     port: 5050
     targetPort: 5050
-    nodePort: 30005  # Accessible on port 30005 on all nodes
+    nodePort: 30005
 
-
-# MySQL Service
 ---
+
+# Project Service (NodePort for External Access)
 apiVersion: v1
 kind: Service
 metadata:
-  name: pfemaroc-mysql-service
+  name: pfemaroc-project-service
+spec:
+  type: NodePort
+  selector:
+    app: pfemaroc-project
+  ports:
+  - protocol: TCP
+    port: 6060
+    targetPort: 6060
+    nodePort: 30006
+
+---
+
+# Auth MySQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: pfemaroc-auth-mysql-service
 spec:
   clusterIP: None
   selector:
     app: pfemaroc-auth-mysql
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
+
+---
+
+# Project MySQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: pfemaroc-project-mysql-service
+spec:
+  clusterIP: None
+  selector:
+    app: pfemaroc-project-mysql
   ports:
   - protocol: TCP
     port: 3306
