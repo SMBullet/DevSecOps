@@ -10,145 +10,193 @@ import com.pfemanager.service_auth.response.LoginResponse;
 import com.pfemanager.service_auth.service.JwtService;
 import com.pfemanager.service_auth.service.UserService;
 import com.pfemanager.service_auth.service.AuthenticationService;
+import com.pfemanager.projectservice.services.ProjectService;
+import com.pfemanager.projectservice.models.Project;
+import com.pfemanager.projectservice.models.ProjectStatus;
+import com.pfemanager.projectservice.dto.ProjectDto;
+import com.pfemanager.projectservice.repositories.ProjectRepository;
 import java.time.LocalDate;
-import java.util.UUID;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
+import java.time.LocalDateTime;
+import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import org.mockito.Mock;
 
 @SpringBootTest
 class ProjectApplicationTests {
 
-	@Mock
-	private JwtService jwtService;
-	
-	@Mock
-	private UserService userService;
+    @Mock
+    private JwtService jwtService;
 
-	@Mock
-	private AuthenticationService authenticationService;
+    @Mock
+    private UserService userService;
 
-	@Test
-	void contextLoads() {
-	}
+    @Mock
+    private AuthenticationService authenticationService;
 
-	@Test
-	void testLoginResponse_Setters() {
-		LoginResponse response = new LoginResponse();
-		response.setToken("test-token");
-		response.setExpiresIn(3600L);
+    @Mock
+    private ProjectService projectService;
 
-		assertEquals("test-token", response.getToken());
-		assertEquals(3600L, response.getExpiresIn());
-	}
+    @Mock
+    private ProjectRepository projectRepository;
 
-	@Test
-	void testRegisterUserDto() {
-		RegisterUserDto dto = new RegisterUserDto();
-		dto.setEmail("test@example.com");
-		dto.setPassword("password123");
-		dto.setUsername("testuser");
-		dto.setDob(LocalDate.of(1990, 1, 1));
-		dto.setRole(Role.STUDENT);
+    // Basic context load test
+    @Test
+    void contextLoads() {
+    }
 
-		assertEquals("test@example.com", dto.getEmail());
-		assertEquals("password123", dto.getPassword());
-		assertEquals("testuser", dto.getUsername());
-		assertEquals(LocalDate.of(1990, 1, 1), dto.getDob());
-		assertEquals(Role.STUDENT, dto.getRole());
-	}
+    // Authentication Service Tests
+    @Test
+    void testLoginResponseSetters() {
+        LoginResponse response = new LoginResponse();
+        response.setToken("test-token");
+        response.setExpiresIn(3600L);
 
-	@Test
-	void testUserModel() {
-		User user = new User();
-		user.setUsername("testuser");
-		user.setEmail("test@example.com");
-		user.setPassword("password123");
-		user.setDob(LocalDate.of(1990, 1, 1));
-		user.setRole(Role.STUDENT);
+        assertEquals("test-token", response.getToken());
+        assertEquals(3600L, response.getExpiresIn());
+    }
 
-		assertEquals("testuser", user.getUsername());
-		assertEquals("test@example.com", user.getEmail());
-		assertEquals("password123", user.getPassword());
-		assertTrue(user.isEnabled());
-		assertTrue(user.isAccountNonExpired());
-		assertTrue(user.isAccountNonLocked());
-		assertTrue(user.isCredentialsNonExpired());
-		assertNotNull(user.getAuthorities());
-	}
+    @Test
+    void testRegisterUserDto() {
+        RegisterUserDto dto = new RegisterUserDto();
+        dto.setEmail("test@example.com");
+        dto.setPassword("password123");
+        dto.setUsername("testuser");
+        dto.setDob(LocalDate.of(1990, 1, 1));
+        dto.setRole(Role.STUDENT);
 
-	@Test
-	void testJwtTokenGeneration() {
-		User user = new User();
-		user.setUsername("testuser");
-		user.setRole(Role.STUDENT);
+        assertEquals("test@example.com", dto.getEmail());
+        assertEquals("password123", dto.getPassword());
+        assertEquals("testuser", dto.getUsername());
+        assertEquals(LocalDate.of(1990, 1, 1), dto.getDob());
+        assertEquals(Role.STUDENT, dto.getRole());
+    }
 
-		when(jwtService.generateToken(user)).thenReturn("test-jwt-token");
-		when(jwtService.getExpirationTime()).thenReturn(3600L);
+    @Test
+    void testUserModel() {
+        User user = new User();
+        user.setUsername("testuser");
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
+        user.setDob(LocalDate.of(1990, 1, 1));
+        user.setRole(Role.STUDENT);
 
-		String token = jwtService.generateToken(user);
-		long expirationTime = jwtService.getExpirationTime();
+        assertEquals("testuser", user.getUsername());
+        assertEquals("test@example.com", user.getEmail());
+        assertEquals("password123", user.getPassword());
+        assertTrue(user.isEnabled());
+        assertTrue(user.isAccountNonExpired());
+        assertTrue(user.isAccountNonLocked());
+        assertTrue(user.isCredentialsNonExpired());
+        assertNotNull(user.getAuthorities());
+    }
 
-		assertEquals("test-jwt-token", token);
-		assertEquals(3600L, expirationTime);
-	}
+    @Test
+    void testJwtTokenGeneration() {
+        User user = new User();
+        user.setUsername("testuser");
+        user.setRole(Role.STUDENT);
 
-	@Test
-	void testUserAuthentication() {
-		LoginUserDto loginDto = new LoginUserDto();
-		loginDto.setUsername("testuser");
-		loginDto.setPassword("password123");
+        when(jwtService.generateToken(user)).thenReturn("test-jwt-token");
+        when(jwtService.getExpirationTime()).thenReturn(3600L);
 
-		User user = new User();
-		user.setUsername("testuser");
-		user.setPassword("password123");
-		user.setRole(Role.STUDENT);
+        String token = jwtService.generateToken(user);
+        long expirationTime = jwtService.getExpirationTime();
 
-		when(authenticationService.authenticate(loginDto)).thenReturn(user);
-		when(jwtService.generateToken(user)).thenReturn("test-jwt-token");
+        assertEquals("test-jwt-token", token);
+        assertEquals(3600L, expirationTime);
+    }
 
-		User authenticatedUser = authenticationService.authenticate(loginDto);
-		String token = jwtService.generateToken(authenticatedUser);
+    @Test
+    void testInvalidLogin() {
+        LoginUserDto loginDto = new LoginUserDto();
+        loginDto.setUsername("invaliduser");
+        loginDto.setPassword("wrongpassword");
 
-		assertEquals("testuser", authenticatedUser.getUsername());
-		assertEquals("test-jwt-token", token);
-	}
+        when(authenticationService.authenticate(loginDto)).thenThrow(new IllegalArgumentException("Invalid credentials"));
 
-	@Test
-	void testUserService_SearchUsers() {
-		User user1 = new User();
-		user1.setUsername("testuser1");
-		User user2 = new User();
-		user2.setUsername("testuser2");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            authenticationService.authenticate(loginDto);
+        });
 
-		List<User> users = Arrays.asList(user1, user2);
-		when(userService.searchUsers("test")).thenReturn(users);
+        assertEquals("Invalid credentials", exception.getMessage());
+    }
 
-		List<User> searchResults = userService.searchUsers("test");
-		assertEquals(2, searchResults.size());
-		assertEquals("testuser1", searchResults.get(0).getUsername());
-		assertEquals("testuser2", searchResults.get(1).getUsername());
-	}
+    // Project Service Tests
+    @Test
+    void testCreateProjectWithValidData() {
+        ProjectDto dto = new ProjectDto();
+        dto.setTitle("Project Title");
+        dto.setDescription("Description");
+        dto.setLocation("Location");
+        dto.setSubject("Subject");
+        dto.setProjectTime(LocalDateTime.now());
+        dto.setProjectMembers(Arrays.asList(UUID.randomUUID()));
 
-	// @Test
-	// void testUserService_AddProjectToUser() {
-	// 	UUID userId = UUID.randomUUID();
-	// 	UUID projectId = UUID.randomUUID();
-		
-	// 	User user = new User();
-	// 	user.setId(userId);
-	// 	user.setProjects(new ArrayList<>());
+        Project project = new Project();
+        project.setTitle(dto.getTitle());
+        project.setDescription(dto.getDescription());
+        project.setLocation(dto.getLocation());
 
-	// 	when(userService.findById(userId)).thenReturn(Optional.of(user));
-	// 	when(userService.addProjectToUser(userId, projectId)).thenReturn(user);
+        when(projectService.createProject(dto)).thenReturn(project);
 
-	// 	User updatedUser = userService.addProjectToUser(userId, projectId);
-	// 	assertTrue(updatedUser.getProjects().contains(projectId));
-	// }
+        Project createdProject = projectService.createProject(dto);
+
+        assertNotNull(createdProject);
+        assertEquals(dto.getTitle(), createdProject.getTitle());
+    }
+
+    @Test
+    void testFetchNonexistentProject() {
+        UUID nonexistentProjectId = UUID.randomUUID();
+
+        when(projectRepository.findById(nonexistentProjectId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> {
+            projectService.getProject(nonexistentProjectId);
+        });
+    }
+
+    @Test
+    void testUpdateProjectStatus() {
+        UUID projectId = UUID.randomUUID();
+        Project project = new Project();
+        project.setId(projectId);
+        project.setStatus(ProjectStatus.IN_PROGRESS);
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(projectRepository.save(project)).thenReturn(project);
+
+        Project updatedProject = projectService.updateProjectStatus(projectId, ProjectStatus.COMPLETED);
+
+        assertEquals(ProjectStatus.COMPLETED, updatedProject.getStatus());
+    }
+
+    @Test
+    void testDeleteProject() {
+        UUID projectId = UUID.randomUUID();
+
+        doNothing().when(projectRepository).deleteById(projectId);
+
+        projectService.deleteProject(projectId);
+
+        verify(projectRepository, times(1)).deleteById(projectId);
+    }
+
+    @Test
+    void testProjectServiceGetAllProjects() {
+        Project project1 = new Project();
+        project1.setTitle("Project 1");
+
+        Project project2 = new Project();
+        project2.setTitle("Project 2");
+
+        List<Project> projects = Arrays.asList(project1, project2);
+        when(projectRepository.findAll()).thenReturn(projects);
+
+        List<Project> fetchedProjects = projectService.getAllProjects();
+
+        assertEquals(2, fetchedProjects.size());
+        assertEquals("Project 1", fetchedProjects.get(0).getTitle());
+    }
 }
