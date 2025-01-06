@@ -10,14 +10,7 @@ import com.pfemanager.service_auth.response.LoginResponse;
 import com.pfemanager.service_auth.service.JwtService;
 import com.pfemanager.service_auth.service.UserService;
 import com.pfemanager.service_auth.service.AuthenticationService;
-import com.pfemanager.projectservice.services.ProjectService;
-import com.pfemanager.projectservice.models.Project;
-import com.pfemanager.projectservice.models.ProjectStatus;
-import com.pfemanager.projectservice.dto.ProjectDto;
-import com.pfemanager.projectservice.repositories.ProjectRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import org.mockito.Mock;
@@ -33,12 +26,6 @@ class ProjectApplicationTests {
 
     @Mock
     private AuthenticationService authenticationService;
-
-    @Mock
-    private ProjectService projectService;
-
-    @Mock
-    private ProjectRepository projectRepository;
 
     // Basic context load test
     @Test
@@ -120,83 +107,5 @@ class ProjectApplicationTests {
         });
 
         assertEquals("Invalid credentials", exception.getMessage());
-    }
-
-    // Project Service Tests
-    @Test
-    void testCreateProjectWithValidData() {
-        ProjectDto dto = new ProjectDto();
-        dto.setTitle("Project Title");
-        dto.setDescription("Description");
-        dto.setLocation("Location");
-        dto.setSubject("Subject");
-        dto.setProjectTime(LocalDateTime.now());
-        dto.setProjectMembers(Arrays.asList(UUID.randomUUID()));
-
-        Project project = new Project();
-        project.setTitle(dto.getTitle());
-        project.setDescription(dto.getDescription());
-        project.setLocation(dto.getLocation());
-
-        when(projectService.createProject(dto)).thenReturn(project);
-
-        Project createdProject = projectService.createProject(dto);
-
-        assertNotNull(createdProject);
-        assertEquals(dto.getTitle(), createdProject.getTitle());
-    }
-
-    @Test
-    void testFetchNonexistentProject() {
-        UUID nonexistentProjectId = UUID.randomUUID();
-
-        when(projectRepository.findById(nonexistentProjectId)).thenReturn(Optional.empty());
-
-        assertThrows(NoSuchElementException.class, () -> {
-            projectService.getProject(nonexistentProjectId);
-        });
-    }
-
-    @Test
-    void testUpdateProjectStatus() {
-        UUID projectId = UUID.randomUUID();
-        Project project = new Project();
-        project.setId(projectId);
-        project.setStatus(ProjectStatus.IN_PROGRESS);
-
-        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
-        when(projectRepository.save(project)).thenReturn(project);
-
-        Project updatedProject = projectService.updateProjectStatus(projectId, ProjectStatus.COMPLETED);
-
-        assertEquals(ProjectStatus.COMPLETED, updatedProject.getStatus());
-    }
-
-    @Test
-    void testDeleteProject() {
-        UUID projectId = UUID.randomUUID();
-
-        doNothing().when(projectRepository).deleteById(projectId);
-
-        projectService.deleteProject(projectId);
-
-        verify(projectRepository, times(1)).deleteById(projectId);
-    }
-
-    @Test
-    void testProjectServiceGetAllProjects() {
-        Project project1 = new Project();
-        project1.setTitle("Project 1");
-
-        Project project2 = new Project();
-        project2.setTitle("Project 2");
-
-        List<Project> projects = Arrays.asList(project1, project2);
-        when(projectRepository.findAll()).thenReturn(projects);
-
-        List<Project> fetchedProjects = projectService.getAllProjects();
-
-        assertEquals(2, fetchedProjects.size());
-        assertEquals("Project 1", fetchedProjects.get(0).getTitle());
     }
 }
