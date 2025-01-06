@@ -50,8 +50,4 @@ public class Project {
 
     @Column(name = "report_url", nullable = true)
     private String reportUrl;
-
-
-
-
 }

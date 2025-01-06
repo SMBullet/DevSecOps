@@ -142,8 +142,46 @@ function GoogleButton() {
 
 // Updated LoginForm Component
 function LoginForm({ onForgotPassword }) {
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+  
+    try {
+      const response = await fetch('http://localhost:5050/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+  
+      const data = await response.json();
+      console.log('Login successful:', data);
+  
+      // Extract and decode the JWT
+      const token = data.token; // Assuming the token is in `data.token`
+      const base64Payload = token.split('.')[1]; // Extract payload
+      const decodedPayload = JSON.parse(atob(base64Payload)); // Decode and parse
+      const role = decodedPayload.role; // Get the role
+  
+      console.log('Decoded Role:', role);
+  
+      // Redirect based on role
+      if (role === 'ADMIN') {
+        window.location.href = '/admin/dashboard';
+      } else if (role === 'TEACHER') {
+        window.location.href = '/teacher/dashboard';
+      } else {
+        window.location.href = '/student/dashboard';
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const formVariants = {
@@ -189,10 +227,11 @@ function LoginForm({ onForgotPassword }) {
       
       <div className="mt-12 space-y-8">
         <InputField
-          type="email"
-          id="email"
-          placeholder="Your email"
-          aria-label="Email address"
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Your username"
+          aria-label="username"
         />
         
         <InputField

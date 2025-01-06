@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Clipboard, Calendar, User, MapPin, Briefcase, Award } from "lucide-react";
 import MySidebar from "@/components/MySidebar";
 
+import axios from "axios";
+
 // Define the schema with Zod for form validation
 const formSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }),
@@ -40,9 +42,24 @@ export default function AddProjectPage() {
 
   const [focusedField, setFocusedField] = useState(null);
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Handle form submission logic here
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:6060/api/projects/createproject", 
+        data, 
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Project created successfully:", response.data);
+      alert("Project created successfully!");
+    } catch (error) {
+      console.error("Error creating project:", error.response?.data || error.message);
+      alert("Failed to create project. Please try again.");
+    }
   };
 
   return (
