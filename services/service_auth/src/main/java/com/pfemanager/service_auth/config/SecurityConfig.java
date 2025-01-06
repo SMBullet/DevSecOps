@@ -39,7 +39,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/users/**").permitAll()
-                        .requestMatchers("/users/teacher").hasRole("TEACHER")
                         .anyRequest().authenticated()
 
 

@@ -68,6 +68,10 @@ public class UserController {
         return ResponseEntity.ok(new UserDto(updatedUser));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String query) {
+        return ResponseEntity.ok(userService.searchUsers(query));
+    }
     @GetMapping("/teacher")
     public String teacher(){
         return "This is the teacher page";

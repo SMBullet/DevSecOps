@@ -14,6 +14,7 @@ import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import com.pfemanager.service_auth.model.User;
 
 @Service
 public class JwtService {
@@ -37,6 +38,10 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        // Add the role to the extra claims
+        extraClaims.put("role", ((User) userDetails).getRole().name()); // Add the role from the User entity
+
+        // Build the token with extra claims and role
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 

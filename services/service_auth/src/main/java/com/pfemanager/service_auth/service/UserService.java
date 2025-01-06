@@ -67,4 +67,13 @@ public class UserService {
     public Optional<User> findById(UUID id){
         return userRepository.findById(id);
     }
+
+    public List<User> searchUsers(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        return userRepository.findByUsernameOrEmailContaining(searchTerm).stream()
+                .limit(5)
+                .collect(Collectors.toList());
+    }
 }
