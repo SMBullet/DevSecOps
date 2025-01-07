@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -55,12 +56,13 @@ class SecurityConfigTest {
     void securityFilterChain_ConfiguresSecurityRules() {
         try {
             // Arrange
+            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
             when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
             when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
             when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
             when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
             when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mock(SecurityFilterChain.class));
+            when(httpSecurity.build()).thenReturn(mockFilterChain);
 
             // Act
             SecurityFilterChain filterChain = securityConfig.securityFilterChain(
@@ -87,12 +89,13 @@ class SecurityConfigTest {
     void securityFilterChain_ConfiguresPublicEndpoints() {
         try {
             // Arrange
+            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
             when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
             when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
             when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
             when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
             when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mock(SecurityFilterChain.class));
+            when(httpSecurity.build()).thenReturn(mockFilterChain);
 
             // Act
             SecurityFilterChain filterChain = securityConfig.securityFilterChain(
@@ -115,12 +118,13 @@ class SecurityConfigTest {
     void securityFilterChain_ConfiguresCsrfDisabled() {
         try {
             // Arrange
+            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
             when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
             when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
             when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
             when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
             when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mock(SecurityFilterChain.class));
+            when(httpSecurity.build()).thenReturn(mockFilterChain);
 
             // Act
             SecurityFilterChain filterChain = securityConfig.securityFilterChain(
@@ -143,12 +147,13 @@ class SecurityConfigTest {
     void securityFilterChain_ConfiguresSessionManagement() {
         try {
             // Arrange
+            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
             when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
             when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
             when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
             when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
             when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mock(SecurityFilterChain.class));
+            when(httpSecurity.build()).thenReturn(mockFilterChain);
 
             // Act
             SecurityFilterChain filterChain = securityConfig.securityFilterChain(
@@ -171,12 +176,13 @@ class SecurityConfigTest {
     void securityFilterChain_ConfiguresAuthenticationProvider() {
         try {
             // Arrange
+            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
             when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
             when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
             when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
             when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
             when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mock(SecurityFilterChain.class));
+            when(httpSecurity.build()).thenReturn(mockFilterChain);
 
             // Act
             SecurityFilterChain filterChain = securityConfig.securityFilterChain(
