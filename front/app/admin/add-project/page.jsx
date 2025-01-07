@@ -42,7 +42,7 @@ export default function AddProjectPage() {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:5050/projects', data);
+      const response = await axios.post('http://localhost:6060/api/projects/createproject', data);
       toast.success("Project created successfully!");
       form.reset();
     } catch (error) {

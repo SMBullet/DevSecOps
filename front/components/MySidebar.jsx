@@ -4,13 +4,24 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ClipboardList, MessageSquare, Calendar, Building, Users, LogOut } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // usePathname hook
+import { usePathname, useRouter } from "next/navigation"; // useRouter for navigation
 
 const MySidebar = () => {
   const pathname = usePathname(); // Use usePathname to get the current path
+  const router = useRouter(); // Use useRouter for redirecting
 
   // Function to check if the current link is active
   const isActive = (path) => pathname === path;
+
+  // Logout function
+  const handleLogout = () => {
+    // Clear authentication tokens or session data
+    localStorage.removeItem("authToken"); // Example: Clear the token
+    sessionStorage.removeItem("authToken"); // Example: Clear session data
+
+    // Redirect to the homepage
+    router.push("/");
+  };
 
   return (
     <div className="bg-transparent flex flex-col w-64 min-h-screen">
@@ -74,12 +85,14 @@ const MySidebar = () => {
 
         {/* Logout - Positioned at the bottom */}
         <div className="mb-11">
-          <Link href="/logout" passHref>
-            <Button variant="ghost" className="mb-11 w-full justify-start text-gray-600 hover:text-red-600">
-              <LogOut className="mr-2 h-5 w-5" />
-              Log out
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            className="mb-11 w-full justify-start text-gray-600 hover:text-red-600"
+            onClick={handleLogout} // Call handleLogout on click
+          >
+            <LogOut className="mr-2 h-5 w-5" />
+            Log out
+          </Button>
         </div>
       </div>
     </div>

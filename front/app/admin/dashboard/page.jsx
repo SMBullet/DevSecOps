@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -8,41 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import MySidebar from "@/components/MySidebar"; // Import MySidebar
 
-// Dummy data for filtering
-const pfes = [
-  {
-    id: 1,
-    title: "Platform of end of studies management",
-    supervisor: "O.Achbarou",
-    student: "Brahim KINIOUI",
-    date: "5/7/2025",
-    room: "Room 2",
-    degree: "GCDSTE",
-    entreprise: "Entreprise 1",
-  },
-  {
-    id: 2,
-    title: "A SOC setup and supervision",
-    supervisor: "O.Achbarou",
-    student: "Yassine Essaleh",
-    date: "5/7/2025",
-    room: "Room 2",
-    degree: "GCDSTE",
-    entreprise: "Entreprise 2",
-  },
-  {
-    id: 3,
-    title: "Red Team Operator",
-    supervisor: "O.Achbarou",
-    student: "Mehdi STOTI",
-    date: "6/7/2025",
-    room: "Room 12",
-    degree: "GCDSTE",
-    entreprise: "Entreprise 3",
-  },
-];
-
 const OverviewPage = () => {
+  const [projects, setProjects] = useState([]);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
     entreprise: null,
@@ -52,15 +19,30 @@ const OverviewPage = () => {
     degree: null,
   });
 
-  // Filtered PFE logic
-  const filteredPfes = pfes.filter((pfe) => {
+  useEffect(() => {
+    // Fetch project data from the API
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch("http://localhost:6060/api/projects/all");
+        const data = await response.json();
+        setProjects(data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  // Filtered projects logic
+  const filteredProjects = projects.filter((project) => {
     return (
-      pfe.title.toLowerCase().includes(search.toLowerCase()) &&
-      (filters.entreprise ? pfe.entreprise === filters.entreprise : true) &&
-      (filters.supervisor ? pfe.supervisor === filters.supervisor : true) &&
-      (filters.date ? pfe.date === filters.date : true) &&
-      (filters.room ? pfe.room === filters.room : true) &&
-      (filters.degree ? pfe.degree === filters.degree : true)
+      project.title?.toLowerCase().includes(search.toLowerCase()) &&
+      (filters.entreprise ? project.entreprise === filters.entreprise : true) &&
+      (filters.supervisor ? project.supervisor === filters.supervisor : true) &&
+      (filters.date ? project.date === filters.date : true) &&
+      (filters.room ? project.room === filters.room : true) &&
+      (filters.degree ? project.degree === filters.degree : true)
     );
   });
 
@@ -114,60 +96,6 @@ const OverviewPage = () => {
                 <SelectItem value="Entreprise 3">Entreprise 3</SelectItem>
               </SelectContent>
             </Select>
-
-            <Select
-              value={filters.supervisor || ""}
-              onValueChange={(value) => setFilters({ ...filters, supervisor: value || null })}
-            >
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Supervisor" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={null}>None</SelectItem>
-                <SelectItem value="O.Achbarou">O.Achbarou</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={filters.date || ""}
-              onValueChange={(value) => setFilters({ ...filters, date: value || null })}
-            >
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Date" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={null}>None</SelectItem>
-                <SelectItem value="5/7/2025">5/7/2025</SelectItem>
-                <SelectItem value="6/7/2025">6/7/2025</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={filters.room || ""}
-              onValueChange={(value) => setFilters({ ...filters, room: value || null })}
-            >
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Room" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={null}>None</SelectItem>
-                <SelectItem value="Room 2">Room 2</SelectItem>
-                <SelectItem value="Room 12">Room 12</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={filters.degree || ""}
-              onValueChange={(value) => setFilters({ ...filters, degree: value || null })}
-            >
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Degree" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={null}>None</SelectItem>
-                <SelectItem value="GCDSTE">GCDSTE</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
 
@@ -179,7 +107,7 @@ const OverviewPage = () => {
         {/* Content Card */}
         <Card className="bg-white rounded-xl border-none shadow-none p-0">
           <CardHeader>
-            <CardTitle>Upcoming PFEs</CardTitle>
+            <CardTitle>Upcoming Projects</CardTitle>
           </CardHeader>
           <CardContent>
             {/* Table */}
@@ -188,31 +116,23 @@ const OverviewPage = () => {
                 <TableRow className="text-left">
                   <TableCell className="py-4 px-6">#</TableCell>
                   <TableCell className="py-4 px-6">Title</TableCell>
-                  <TableCell className="py-4 px-6">Supervisor</TableCell>
-                  <TableCell className="py-4 px-6">Student</TableCell>
-                  <TableCell className="py-4 px-6">Date</TableCell>
-                  <TableCell className="py-4 px-6">Room</TableCell>
-                  <TableCell className="py-4 px-6">Degree</TableCell>
-                  <TableCell className="py-4 px-6">Entreprise</TableCell>
+                  <TableCell className="py-4 px-6">Status</TableCell>
+                  <TableCell className="py-4 px-6">Created At</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredPfes.map((pfe) => (
-                  <TableRow key={pfe.id}>
-                    <TableCell className="py-4 px-6">{pfe.id}</TableCell>
-                    <TableCell className="py-4 px-6">{pfe.title}</TableCell>
-                    <TableCell className="py-4 px-6">{pfe.supervisor}</TableCell>
-                    <TableCell className="py-4 px-6">{pfe.student}</TableCell>
-                    <TableCell className="py-4 px-6">{pfe.date}</TableCell>
-                    <TableCell className="py-4 px-6">{pfe.room}</TableCell>
-                    <TableCell className="py-4 px-6">{pfe.degree}</TableCell>
-                    <TableCell className="py-4 px-6">{pfe.entreprise}</TableCell>
+                {filteredProjects.map((project, index) => (
+                  <TableRow key={project.id}>
+                    <TableCell className="py-4 px-6">{index + 1}</TableCell>
+                    <TableCell className="py-4 px-6">{project.title}</TableCell>
+                    <TableCell className="py-4 px-6">{project.status}</TableCell>
+                    <TableCell className="py-4 px-6">{new Date(project.createdAt).toLocaleDateString()}</TableCell>
                   </TableRow>
                 ))}
-                {filteredPfes.length === 0 && (
+                {filteredProjects.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-4">
-                      No PFEs found.
+                    <TableCell colSpan={4} className="text-center py-4">
+                      No projects found.
                     </TableCell>
                   </TableRow>
                 )}
