@@ -1,26 +1,67 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import StudentSidebar from "@/components/StudentSidebar"; // Import Sidebar
-import StudentInfoCard from "@/components/StudentInfoCard"; // Import the new StudentInfoCard component
-// Dummy data for the student
-const pfe = {
-  title: "Platform of end of studies management",
-  supervisor: "O.Achbarou",
-  degree: "GCDSTE",
-  entreprise: "Entreprise 1",
-};
-
-const studentInfo = {
-  name: "Brahim KINIOUI",
-  picture: "https://via.placeholder.com/150", // Placeholder for student picture
-  major: "GCDSTE",
-  email: "brahim.kinoui@email.com",
-  phone: "+123 456 789",
-};
+import StudentSidebar from "@/components/StudentSidebar";
+import StudentInfoCard from "@/components/StudentInfoCard";
 
 const StudentPage = () => {
+  const [userId, setUserId] = useState(null);
+  const [userProject, setUserProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUserAndProject = async () => {
+      try {
+        const token = sessionStorage.getItem("authToken");
+        if (!token) throw new Error("No token found");
+
+        // Fetch user data
+        const userResponse = await axios.get("http://localhost:5050/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userId = userResponse.data.user.id;
+        setUserId(userId);
+
+        // Fetch all projects
+        const projectsResponse = await axios.get("http://localhost:6060/api/projects/all", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const projects = projectsResponse.data;
+
+        // Find project associated with the user
+        const userProject = projects.find((project) =>
+          project.projectMembers.includes(userId)
+        );
+
+        setUserProject(userProject || null);
+      } catch (err) {
+        console.error("Error fetching user/project data:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserAndProject();
+  }, []);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+  }
+
   return (
     <div className="flex min-h-screen w-full">
       {/* Sidebar */}
@@ -42,37 +83,50 @@ const StudentPage = () => {
               <CardTitle className="text-xl font-semibold text-gray-700">Your PFE Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                {/* Title */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">Title:</p>
-                  <p className="text-gray-600">{pfe.title}</p>
-                </div>
+              {userProject ? (
+                <div className="space-y-6">
+                  {/* Title */}
+                  <div>
+                    <p className="text-lg font-semibold text-gray-800">Title:</p>
+                    <p className="text-gray-600">{userProject.title}</p>
+                  </div>
 
-                {/* Supervisor */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">Supervisor:</p>
-                  <p className="text-gray-600">{pfe.supervisor}</p>
-                </div>
+                  {/* Description */}
+                  <div>
+                    <p className="text-lg font-semibold text-gray-800">Description:</p>
+                    <p className="text-gray-600">{userProject.description || "No description available"}</p>
+                  </div>
 
-                {/* Degree */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">Degree:</p>
-                  <p className="text-gray-600">{pfe.degree}</p>
-                </div>
+                  {/* Location */}
+                  <div>
+                    <p className="text-lg font-semibold text-gray-800">Location:</p>
+                    <p className="text-gray-600">{userProject.location || "No location specified"}</p>
+                  </div>
 
-                {/* Company */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">Company:</p>
-                  <p className="text-gray-600">{pfe.entreprise}</p>
+                  {/* Report URL */}
+                  {userProject.reportUrl && (
+                    <div>
+                      <p className="text-lg font-semibold text-gray-800">Report:</p>
+                      <a
+                        href={userProject.reportUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        View Report
+                      </a>
+                    </div>
+                  )}
                 </div>
-              </div>
+              ) : (
+                <p className="text-gray-600">No project found for the logged-in user.</p>
+              )}
             </CardContent>
           </Card>
         </div>
 
         {/* Right Section (Student Info with Gradient) */}
-        <StudentInfoCard studentInfo={studentInfo} /> {/* Use the imported component */}
+        <StudentInfoCard />
       </div>
     </div>
   );

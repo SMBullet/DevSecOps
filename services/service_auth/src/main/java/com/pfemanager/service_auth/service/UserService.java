@@ -33,6 +33,9 @@ public class UserService {
 
         UserDto userDto = UserDto.builder()
 
+                .dob(user.getDob())
+                .role(user.getRole())
+                .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .projects(user.getProjects())

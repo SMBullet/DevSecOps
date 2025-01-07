@@ -13,7 +13,7 @@ public class ProjectServiceClient {
 
     private final RestTemplate restTemplate;
 
-    @Value("http://localhost:8081")
+    @Value("${project.service.url}")
     private String projectServiceUrl;
 
     public ProjectServiceClient(RestTemplate restTemplate){

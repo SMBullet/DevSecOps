@@ -1,26 +1,38 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import StudentSidebar from "@/components/StudentSidebar"; // Import Sidebar
 import StudentInfoCard from "@/components/StudentInfoCard"; // Import the new StudentInfoCard component
 import { Button } from "@/components/ui/button";
-import { User2, Mail, Phone, GraduationCap, Building2 } from "lucide-react"; // Add this import
-
-// Dummy data for the student (this can be replaced with a state or data from an API)
-const initialStudentInfo = {
-  firstName: "Brahim",
-  lastName: "KINIOUI",
-  picture: "https://via.placeholder.com/150", // Placeholder for student picture
-  major: "GCDSTE",
-  email: "brahim.kinoui@email.com",
-  phone: "+123 456 789",
-};
+import { User2, Mail, Phone, GraduationCap } from "lucide-react"; // Add this import
+import axios from "axios";
 
 const SettingsPage = () => {
-  // Use state to manage the student's information
-  const [studentInfo, setStudentInfo] = useState(initialStudentInfo);
+  const [studentInfo, setStudentInfo] = useState({ username: "", email: "", phone: "+123 456 789", major: "GCDSTE" });
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchStudentInfo = async () => {
+      try {
+        const token = sessionStorage.getItem("authToken");
+        if (!token) throw new Error("No token found");
+
+        const response = await axios.get("http://localhost:5050/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const { user } = response.data;
+        setStudentInfo((prevState) => ({ ...prevState, username: user.username, email: user.email }));
+      } catch (error) {
+        console.error("Error fetching student info:", error);
+      }
+    };
+
+    fetchStudentInfo();
+  }, []);
 
   // Handle change for the input fields
   const handleChange = (e) => {
@@ -37,11 +49,9 @@ const SettingsPage = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setStudentInfo(initialStudentInfo); // Reset to original values
   };
 
   const handleSave = () => {
-    // Add logic to save updated student information
     alert("Your information has been updated!");
     setIsEditing(false); // Exit edit mode after saving
   };
@@ -75,7 +85,6 @@ const SettingsPage = () => {
                     variant="outline"
                     className="flex items-center gap-2 text-blue-600 border-blue-200 hover:bg-blue-50"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
                     Edit Information
                   </Button>
                 )}
@@ -83,63 +92,43 @@ const SettingsPage = () => {
             </CardHeader>
             <CardContent className="pt-6">
               <div className="space-y-6">
-                {/* Name Group */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* First Name */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">First Name</label>
-                    <div className="relative group">
-                      <input
-                        type="text"
-                        name="firstName"
-                        value={studentInfo.firstName}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className={`w-full pl-4 pr-4 py-3 text-sm border border-gray-200 rounded-xl
-                                 transition-all duration-200 bg-white/50
-                                 ${isEditing ? 'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 group-hover:border-blue-500/50' : 'bg-gray-50 cursor-not-allowed'}`}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Last Name */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Last Name</label>
-                    <div className="relative group">
-                      <input
-                        type="text"
-                        name="lastName"
-                        value={studentInfo.lastName}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className={`w-full pl-4 pr-4 py-3 text-sm border border-gray-200 rounded-xl
-                                 transition-all duration-200 bg-white/50
-                                 ${isEditing ? 'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 group-hover:border-blue-500/50' : 'bg-gray-50 cursor-not-allowed'}`}
-                      />
-                    </div>
+                {/* Username */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Username</label>
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      name="username"
+                      value={studentInfo.username}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      className={`w-full pl-4 pr-4 py-3 text-sm border border-gray-200 rounded-xl
+                               transition-all duration-200 bg-white/50
+                               ${isEditing ? 'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 group-hover:border-blue-500/50' : 'bg-gray-50 cursor-not-allowed'}`}
+                    />
                   </div>
                 </div>
 
-                {/* Contact Group */}
-                <div className="space-y-4">
-                  {/* Email */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Email Address</label>
-                    <div className="relative group">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        type="email"
-                        name="email"
-                        value={studentInfo.email}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className={`w-full pl-12 pr-4 py-3 text-sm border border-gray-200 rounded-xl
-                                 transition-all duration-200 bg-white/50
-                                 ${isEditing ? 'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 group-hover:border-blue-500/50' : 'bg-gray-50 cursor-not-allowed'}`}
-                      />
-                    </div>
+                {/* Email */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Email Address</label>
+                  <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={studentInfo.email}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      className={`w-full pl-12 pr-4 py-3 text-sm border border-gray-200 rounded-xl
+                               transition-all duration-200 bg-white/50
+                               ${isEditing ? 'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 group-hover:border-blue-500/50' : 'bg-gray-50 cursor-not-allowed'}`}
+                    />
                   </div>
+                </div>
 
+                {/* Static Fields */}
+                <div className="space-y-4">
                   {/* Phone */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">Phone Number</label>
@@ -149,11 +138,9 @@ const SettingsPage = () => {
                         type="text"
                         name="phone"
                         value={studentInfo.phone}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className={`w-full pl-12 pr-4 py-3 text-sm border border-gray-200 rounded-xl
-                                 transition-all duration-200 bg-white/50
-                                 ${isEditing ? 'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 group-hover:border-blue-500/50' : 'bg-gray-50 cursor-not-allowed'}`}
+                        disabled
+                        className="w-full pl-12 pr-4 py-3 text-sm border border-gray-200 rounded-xl
+                               transition-all duration-200 bg-gray-50 cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -167,11 +154,9 @@ const SettingsPage = () => {
                         type="text"
                         name="major"
                         value={studentInfo.major}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className={`w-full pl-12 pr-4 py-3 text-sm border border-gray-200 rounded-xl
-                                 transition-all duration-200 bg-white/50
-                                 ${isEditing ? 'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 group-hover:border-blue-500/50' : 'bg-gray-50 cursor-not-allowed'}`}
+                        disabled
+                        className="w-full pl-12 pr-4 py-3 text-sm border border-gray-200 rounded-xl
+                               transition-all duration-200 bg-gray-50 cursor-not-allowed"
                       />
                     </div>
                   </div>

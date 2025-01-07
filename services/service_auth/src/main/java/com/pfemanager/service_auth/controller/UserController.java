@@ -59,7 +59,7 @@ public class UserController {
         return ResponseEntity.ok(userforProjectDto);
     }
 
-    @PostMapping("/add-project")
+    @PatchMapping("/add-project")
     public ResponseEntity<UserDto> addProjectToUser(@RequestBody Map<String, String> payload) {
         UUID userId = UUID.fromString(payload.get("userId"));
         UUID projectId = UUID.fromString(payload.get("projectId"));

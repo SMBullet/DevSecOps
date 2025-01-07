@@ -211,8 +211,11 @@ function LoginForm({ onForgotPassword }) {
       const data = await response.json();
       console.log('Login successful:', data);
   
-      // Extract and decode the JWT
+      // Extract and store the JWT in localStorage
       const token = data.token; // Assuming the token is in `data.token`
+      sessionStorage.setItem('authToken', token); // Store token in localStorage
+  
+      // Extract and decode the JWT to get the user's role
       const base64Payload = token.split('.')[1]; // Extract payload
       const decodedPayload = JSON.parse(atob(base64Payload)); // Decode and parse
       const role = decodedPayload.role; // Get the role
@@ -231,6 +234,7 @@ function LoginForm({ onForgotPassword }) {
       console.error('Error:', error);
     }
   };
+  
 
   const formVariants = {
     hidden: { opacity: 0, y: 20 },
