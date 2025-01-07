@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from 'react';
 
 // LoginPage Component
 export default function LoginPage() {
@@ -123,10 +124,57 @@ function InputField({ type, id, placeholder, "aria-label": ariaLabel }) {
 
 // Updated GoogleButton Component
 function GoogleButton() {
+  useEffect(() => {
+    // Initialize Google Sign-In
+    const loadGoogleScript = () => {
+      window.gapi.load('auth2', () => {
+        window.gapi.auth2.init({
+          client_id: '1078873613017-o3t2335553914evlaaher2ja4dumst2s.apps.googleusercontent.com' // Replace with your client ID
+        });
+      });
+    };
+
+    // Add Google's script dynamically
+    const script = document.createElement('script');
+    script.src = 'https://apis.google.com/js/platform.js';
+    script.async = true;
+    script.defer = true;
+    script.onload = loadGoogleScript;
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  const handleGoogleSignIn = () => {
+    const auth2 = window.gapi.auth2.getAuthInstance();
+    auth2.signIn().then(googleUser => {
+      const id_token = googleUser.getAuthResponse().id_token;
+      // Send token to your backend
+      fetch('http://localhost:5050/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ token: id_token })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle successful login
+        console.log('Google sign-in successful:', data);
+      })
+      .catch(error => {
+        console.error('Error during Google sign-in:', error);
+      });
+    });
+  };
+
   return (
     <button 
-      type="button" 
-      
+      type="button"
+      onClick={handleGoogleSignIn}
       className="w-full flex items-center justify-center gap-3 px-6 py-4 mt-6 text-white rounded-xl border bg-gray-900 hover:bg-[#4A3E3E] text-lg font-medium"
     >
       <img

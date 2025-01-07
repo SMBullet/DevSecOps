@@ -2,6 +2,7 @@ import * as React from "react";
 import TemplateCard from "./TemplateCard";
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const templateData = [
   {
@@ -22,6 +23,7 @@ const templateData = [
 ];
 
 const TemplatesSection = () => {
+  const router = useRouter(); // Add this
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrev = () => {
@@ -34,6 +36,10 @@ const TemplatesSection = () => {
     setCurrentIndex((prevIndex) => 
       prevIndex === templateData.length - 1 ? 0 : prevIndex + 1
     );
+  };
+
+  const handleStartNow = () => {
+    router.push('/sign-in');
   };
 
   return (
@@ -119,6 +125,7 @@ const TemplatesSection = () => {
             whileTap={{ scale: 0.95 }}
             className="px-10 py-5 mt-14 text-xl font-medium bg-[#E6E6E6] rounded-full hover:bg-[#d1d1d1] transition-colors duration-300"
             aria-label="Explore all templates"
+            onClick={handleStartNow} // Add this
           >
             Start Now
           </motion.button>
