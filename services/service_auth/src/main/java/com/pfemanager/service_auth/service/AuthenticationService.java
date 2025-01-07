@@ -30,22 +30,49 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User signup(RegisterUserDto input) {
-        User user = new User()
 
+
+
+    
+    public User signup(RegisterUserDto input) {
+        if (input == null) {
+            throw new IllegalArgumentException("RegisterUserDto cannot be null");
+        }
+        if (input.getUsername() == null || input.getUsername().trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        if (input.getPassword() == null || input.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+        if (input.getEmail() == null || input.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+
+        User user = new User()
                 .setUsername(input.getUsername())
                 .setDob(input.getDob())
                 .setEmail(input.getEmail())
                 .setPassword(passwordEncoder.encode(input.getPassword()))
                 .setRole(input.getRole());
 
-
-
-
         return userRepository.save(user);
     }
 
+
+
+
+
     public User authenticate(LoginUserDto input) {
+        if (input == null) {
+            throw new IllegalArgumentException("LoginUserDto cannot be null");
+        }
+        if (input.getUsername() == null || input.getUsername().trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        if (input.getPassword() == null || input.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getUsername(),
@@ -54,6 +81,6 @@ public class AuthenticationService {
         );
 
         return userRepository.findByUsername(input.getUsername())
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 }
