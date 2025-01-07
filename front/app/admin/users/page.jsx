@@ -1,62 +1,63 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { User, GraduationCap, Mail } from "lucide-react";
+import { User, Mail } from "lucide-react";
 import MySidebar from "@/components/MySidebar";
 
-// Define schemas for both forms
-const studentSchema = z.object({
-  firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
-  lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
-  degree: z.string().min(2, { message: "Degree must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-});
+import axios from "axios";
 
-const teacherSchema = z.object({
-  firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
-  lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
-  speciality: z.string().min(2, { message: "Speciality must be at least 2 characters." }),
+// Define schema for the form validation using Zod
+const userSchema = z.object({
+  username: z.string().min(2, { message: "Username must be at least 2 characters." }),
+  dob: z.string().nonempty({ message: "Date of birth is required." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  role: z.enum(["student", "teacher"], { message: "Role must be either student or teacher." }),
 });
 
 export default function UsersPage() {
   const [focusedField, setFocusedField] = useState(null);
 
-  const studentForm = useForm({
-    resolver: zodResolver(studentSchema),
+  // Create the form methods for handling the form with React Hook Form
+  const methods = useForm({
+    resolver: zodResolver(userSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      degree: "",
+      username: "",
+      dob: "",
       email: "",
+      password: "",
+      role: "student", // default role is "student"
     },
   });
 
-  const teacherForm = useForm({
-    resolver: zodResolver(teacherSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      speciality: "",
-      email: "",
-    },
-  });
 
-  const onStudentSubmit = (data) => {
-    console.log("Student data:", data);
-    // Add your API call here
-  };
+  const onSubmit = async (data) => {
+    try {
+      const userData = {
+        username: data.username,
+        dob: data.dob,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+      };
 
-  const onTeacherSubmit = (data) => {
-    console.log("Teacher data:", data);
-    // Add your API call here
+      // Send the POST request to the back-end API
+      const response = await axios.post(`http://localhost:5050/auth/register`, userData);
+
+      // Handle successful response
+      console.log("User registered:", response.data);
+      // Optionally reset form or show a success message
+    } catch (error) {
+      // Handle errors
+      console.error("Error registering user:", error);
+    }
   };
 
   return (
@@ -66,66 +67,52 @@ export default function UsersPage() {
       <div className="flex-1 w-full p-8 mx-4 my-6 bg-white rounded-3xl shadow-xl">
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Users</h1>
-          <p className="text-gray-600">Welcome back, Admin! Check your settings and verify your informations!</p>
+          <p className="text-gray-600">Welcome back, Admin! Check your settings and verify your information!</p>
         </header>
 
-        {/* Students Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Students</h2>
-          <Form {...studentForm}>
-            <form onSubmit={studentForm.handleSubmit(onStudentSubmit)} className="space-y-4">
+          <h2 className="text-xl font-semibold mb-4">Create New User</h2>
+          
+          {/* Wrap the form inside FormProvider to share form context */}
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">
-                {/* Student Form Fields */}
+                {/* Username Field */}
                 <FormField
-                  control={studentForm.control}
-                  name="firstName"
+                  control={methods.control}
+                  name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>Username</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the first name of the student" {...field} className="pl-10" />
+                          <Input placeholder="Enter the username" {...field} className="pl-10" />
                         </div>
                       </FormControl>
                     </FormItem>
                   )}
                 />
 
+                {/* Date of Birth Field */}
                 <FormField
-                  control={studentForm.control}
-                  name="lastName"
+                  control={methods.control}
+                  name="dob"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>Date of Birth</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the last name of the student" {...field} className="pl-10" />
+                          <Input type="date" {...field} className="pl-10" />
                         </div>
                       </FormControl>
                     </FormItem>
                   )}
                 />
 
+                {/* Email Field */}
                 <FormField
-                  control={studentForm.control}
-                  name="degree"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Degree</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <GraduationCap className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the degree of the student" {...field} className="pl-10" />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={studentForm.control}
+                  control={methods.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
@@ -133,7 +120,42 @@ export default function UsersPage() {
                       <FormControl>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the name of the student" {...field} className="pl-10" />
+                          <Input placeholder="Enter the email address" {...field} className="pl-10" />
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {/* Password Field */}
+                <FormField
+                  control={methods.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input type="password" placeholder="Enter a secure password" {...field} className="pl-10" />
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {/* Role Dropdown */}
+                <FormField
+                  control={methods.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Role</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <select {...field} className="pl-10 py-2 pr-3 border rounded-md text-gray-600">
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                          </select>
                         </div>
                       </FormControl>
                     </FormItem>
@@ -150,91 +172,7 @@ export default function UsersPage() {
                 </Button>
               </div>
             </form>
-          </Form>
-        </div>
-
-        {/* Teachers Section */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Teachers</h2>
-          <Form {...teacherForm}>
-            <form onSubmit={teacherForm.handleSubmit(onTeacherSubmit)} className="space-y-4">
-              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">
-                {/* Teacher Form Fields */}
-                <FormField
-                  control={teacherForm.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the first name of the teacher" {...field} className="pl-10" />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={teacherForm.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the last name of the teacher" {...field} className="pl-10" />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={teacherForm.control}
-                  name="speciality"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Speciality</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <GraduationCap className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the degree of the student" {...field} className="pl-10" />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={teacherForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the name of the student" {...field} className="pl-10" />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="flex justify-end gap-4">
-                <Button type="button" variant="destructive">
-                  Cancel
-                </Button>
-                <Button type="submit" className="bg-black text-white hover:bg-gray-800">
-                  Add
-                </Button>
-              </div>
-            </form>
-          </Form>
+          </FormProvider>
         </div>
       </div>
     </div>
