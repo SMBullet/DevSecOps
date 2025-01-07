@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import static org.mockito.Mockito.*;
 
@@ -38,8 +40,11 @@ class JwtAuthenticationFilterTest {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
+
+        // Mock response writer to avoid NullPointerException
+        when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
     }
 
     @Test
