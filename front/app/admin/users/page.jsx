@@ -18,7 +18,7 @@ const userSchema = z.object({
   dob: z.string().nonempty({ message: "Date of birth is required." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-  role: z.enum(["student", "teacher"], { message: "Role must be either student or teacher." }),
+  role: z.enum(["STUDENT", "TEACHER"], { message: "Role must be either STUDENT or TEACHER." }),
 });
 
 export default function UsersPage() {
@@ -31,17 +31,27 @@ export default function UsersPage() {
       dob: "",
       email: "",
       password: "",
-      role: "student",
+      role: "STUDENT",  // Changed to uppercase
     },
   });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const response = await axios.post(`http://localhost:5050/auth/register`, data);
+      const response = await axios.post(
+        `http://localhost:5050/auth/register`, 
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        }
+      );
       toast.success("User created successfully!");
       methods.reset();
     } catch (error) {
+      console.error('Registration error:', error);
       toast.error(error.response?.data?.message || "Failed to create user");
     } finally {
       setIsLoading(false);
@@ -177,8 +187,8 @@ export default function UsersPage() {
                             {...field} 
                             className="w-full pl-10 h-11 border rounded-md border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent"
                           >
-                            <option value="student">Student</option>
-                            <option value="teacher">Teacher</option>
+                            <option value="STUDENT">Student</option>
+                            <option value="TEACHER">Teacher</option>
                           </select>
                         </div>
                       </FormControl>
