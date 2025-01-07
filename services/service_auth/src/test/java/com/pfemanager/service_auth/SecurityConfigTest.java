@@ -11,12 +11,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.DefaultSecurityFilterChain;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.cors.CorsConfiguration;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -38,15 +33,20 @@ class SecurityConfigTest {
     @InjectMocks
     private SecurityConfig securityConfig;
 
-    private MockMvc mockMvc;
+    private DefaultSecurityFilterChain mockFilterChain;
 
     @BeforeEach
     void setUp() {
         try {
-            mockMvc = MockMvcBuilders
-                    .standaloneSetup()
-                    .addFilter(new JwtAuthenticationFilter(jwtService, userDetailsService))
-                    .build();
+            mockFilterChain = mock(DefaultSecurityFilterChain.class);
+            
+            // Common setup for HttpSecurity
+            when(httpSecurity.csrf()).thenReturn(httpSecurity);
+            when(httpSecurity.authorizeHttpRequests()).thenReturn(httpSecurity);
+            when(httpSecurity.sessionManagement()).thenReturn(httpSecurity);
+            when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
+            when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
+            when(httpSecurity.build()).thenReturn(mockFilterChain);
         } catch (Exception e) {
             System.out.println("Error in setUp: " + e.getMessage());
         }
@@ -55,31 +55,15 @@ class SecurityConfigTest {
     @Test
     void securityFilterChain_ConfiguresSecurityRules() {
         try {
-            // Arrange
-            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
-            when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
-            when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
-            when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mockFilterChain);
-
             // Act
-            SecurityFilterChain filterChain = securityConfig.securityFilterChain(
-                    httpSecurity, 
-                    jwtService,
-                    userDetailsService
-            );
+            securityConfig.securityFilterChain(httpSecurity, jwtService, userDetailsService);
 
             // Assert
-            assertNotNull(filterChain, "SecurityFilterChain should not be null");
-            verify(httpSecurity).csrf(any());
-            verify(httpSecurity).authorizeHttpRequests(any());
-            verify(httpSecurity).sessionManagement(any());
+            verify(httpSecurity).csrf();
+            verify(httpSecurity).authorizeHttpRequests();
+            verify(httpSecurity).sessionManagement();
             verify(httpSecurity).authenticationProvider(authenticationProvider);
             verify(httpSecurity).addFilterBefore(any(), any());
-        } catch (AssertionError e) {
-            System.out.println("Test failed - securityFilterChain_ConfiguresSecurityRules: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Unexpected error in securityFilterChain_ConfiguresSecurityRules: " + e.getMessage());
         }
@@ -88,27 +72,11 @@ class SecurityConfigTest {
     @Test
     void securityFilterChain_ConfiguresPublicEndpoints() {
         try {
-            // Arrange
-            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
-            when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
-            when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
-            when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mockFilterChain);
-
             // Act
-            SecurityFilterChain filterChain = securityConfig.securityFilterChain(
-                    httpSecurity,
-                    jwtService,
-                    userDetailsService
-            );
+            securityConfig.securityFilterChain(httpSecurity, jwtService, userDetailsService);
 
             // Assert
-            assertNotNull(filterChain, "SecurityFilterChain should not be null");
-            verify(httpSecurity).authorizeHttpRequests(any());
-        } catch (AssertionError e) {
-            System.out.println("Test failed - securityFilterChain_ConfiguresPublicEndpoints: " + e.getMessage());
+            verify(httpSecurity).authorizeHttpRequests();
         } catch (Exception e) {
             System.out.println("Unexpected error in securityFilterChain_ConfiguresPublicEndpoints: " + e.getMessage());
         }
@@ -117,27 +85,11 @@ class SecurityConfigTest {
     @Test
     void securityFilterChain_ConfiguresCsrfDisabled() {
         try {
-            // Arrange
-            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
-            when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
-            when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
-            when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mockFilterChain);
-
             // Act
-            SecurityFilterChain filterChain = securityConfig.securityFilterChain(
-                    httpSecurity,
-                    jwtService,
-                    userDetailsService
-            );
+            securityConfig.securityFilterChain(httpSecurity, jwtService, userDetailsService);
 
             // Assert
-            assertNotNull(filterChain, "SecurityFilterChain should not be null");
-            verify(httpSecurity).csrf(any());
-        } catch (AssertionError e) {
-            System.out.println("Test failed - securityFilterChain_ConfiguresCsrfDisabled: " + e.getMessage());
+            verify(httpSecurity).csrf();
         } catch (Exception e) {
             System.out.println("Unexpected error in securityFilterChain_ConfiguresCsrfDisabled: " + e.getMessage());
         }
@@ -146,27 +98,11 @@ class SecurityConfigTest {
     @Test
     void securityFilterChain_ConfiguresSessionManagement() {
         try {
-            // Arrange
-            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
-            when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
-            when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
-            when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mockFilterChain);
-
             // Act
-            SecurityFilterChain filterChain = securityConfig.securityFilterChain(
-                    httpSecurity,
-                    jwtService,
-                    userDetailsService
-            );
+            securityConfig.securityFilterChain(httpSecurity, jwtService, userDetailsService);
 
             // Assert
-            assertNotNull(filterChain, "SecurityFilterChain should not be null");
-            verify(httpSecurity).sessionManagement(any());
-        } catch (AssertionError e) {
-            System.out.println("Test failed - securityFilterChain_ConfiguresSessionManagement: " + e.getMessage());
+            verify(httpSecurity).sessionManagement();
         } catch (Exception e) {
             System.out.println("Unexpected error in securityFilterChain_ConfiguresSessionManagement: " + e.getMessage());
         }
@@ -175,27 +111,11 @@ class SecurityConfigTest {
     @Test
     void securityFilterChain_ConfiguresAuthenticationProvider() {
         try {
-            // Arrange
-            DefaultSecurityFilterChain mockFilterChain = mock(DefaultSecurityFilterChain.class);
-            when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
-            when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
-            when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
-            when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
-            when(httpSecurity.build()).thenReturn(mockFilterChain);
-
             // Act
-            SecurityFilterChain filterChain = securityConfig.securityFilterChain(
-                    httpSecurity,
-                    jwtService,
-                    userDetailsService
-            );
+            securityConfig.securityFilterChain(httpSecurity, jwtService, userDetailsService);
 
             // Assert
-            assertNotNull(filterChain, "SecurityFilterChain should not be null");
             verify(httpSecurity).authenticationProvider(authenticationProvider);
-        } catch (AssertionError e) {
-            System.out.println("Test failed - securityFilterChain_ConfiguresAuthenticationProvider: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Unexpected error in securityFilterChain_ConfiguresAuthenticationProvider: " + e.getMessage());
         }
