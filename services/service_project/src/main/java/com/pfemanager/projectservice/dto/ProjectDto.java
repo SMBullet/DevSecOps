@@ -1,10 +1,7 @@
 package com.pfemanager.projectservice.dto;
 
 import com.pfemanager.projectservice.models.ProjectStatus;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +11,8 @@ import java.util.UUID;
 @Setter
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProjectDto {
     private String title;
     private String description;
