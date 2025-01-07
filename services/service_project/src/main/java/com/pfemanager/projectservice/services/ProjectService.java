@@ -34,6 +34,7 @@ public class ProjectService{
         project.setCreatedAt(LocalDateTime.now());
         project.setProjectTime(dto.getProjectTime());
         project.setProjectMembers(dto.getProjectMembers());
+        project.setReportUrl(dto.getReportUrl());
 
         project = projectRepository.save(project);
 

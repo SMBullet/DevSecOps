@@ -3,14 +3,25 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Home, Clock, Mail, Settings, LogOut } from "lucide-react"; // New icons
-import Link from "next/link";
+import { useRouter } from "next/navigation"; // useRouter for navigation
 import { usePathname } from "next/navigation"; // usePathname hook
 
 const TeacherSidebar = () => {
   const pathname = usePathname(); // Use usePathname to get the current path
+  const router = useRouter(); // Use useRouter for redirecting
 
   // Function to check if the current link is active
   const isActive = (path) => pathname === path;
+
+  // Logout function
+  const handleLogout = () => {
+    // Clear authentication tokens or session data
+    localStorage.removeItem("authToken"); // Example: Clear the token
+    sessionStorage.removeItem("authToken"); // Example: Clear session data
+
+    // Redirect to the homepage
+    router.push("/");
+  };
 
   return (
     <div className="bg-transparent flex flex-col w-64 min-h-screen">
@@ -21,55 +32,53 @@ const TeacherSidebar = () => {
 
         {/* Navigation */}
         <nav className="space-y-6 flex-1 ml-2">
-          <Link href="/teacher/dashboard" passHref>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${isActive("/teacher/dashboard") ? "text-green-600" : "text-gray-600"} mb-3 mt-11`}
-            >
-              <Home className="mr-2 h-5 w-5" /> {/* Changed icon to Home */}
-              Overview
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            className={`w-full justify-start ${isActive("/teacher/dashboard") ? "text-green-600" : "text-gray-600"} mb-3 mt-11`}
+            onClick={() => router.push("/teacher/dashboard")}
+          >
+            <Home className="mr-2 h-5 w-5" /> {/* Changed icon to Home */}
+            Overview
+          </Button>
 
-          <Link href="/teacher/schedule" passHref>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${isActive("/teacher/schedule") ? "text-green-600" : "text-gray-600"} mb-3`}
-            >
-              <Clock className="mr-2 h-5 w-5" /> {/* Changed icon to Clock */}
-              Schedule
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            className={`w-full justify-start ${isActive("/teacher/schedule") ? "text-green-600" : "text-gray-600"} mb-3`}
+            onClick={() => router.push("/teacher/schedule")}
+          >
+            <Clock className="mr-2 h-5 w-5" /> {/* Changed icon to Clock */}
+            Schedule
+          </Button>
 
-          <Link href="/teacher/messages" passHref>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${isActive("/teacher/messages") ? "text-green-600" : "text-gray-600"} mb-3`}
-            >
-              <Mail className="mr-2 h-5 w-5" /> {/* Changed icon to Mail */}
-              Messages
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            className={`w-full justify-start ${isActive("/teacher/messages") ? "text-green-600" : "text-gray-600"} mb-3`}
+            onClick={() => router.push("/teacher/messages")}
+          >
+            <Mail className="mr-2 h-5 w-5" /> {/* Changed icon to Mail */}
+            Messages
+          </Button>
 
-          <Link href="/teacher/settings" passHref>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${isActive("/teacher/settings") ? "text-green-600" : "text-gray-600"} mb-3`}
-            >
-              <Settings className="mr-2 h-5 w-5" /> {/* Changed icon to Settings */}
-              Settings
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            className={`w-full justify-start ${isActive("/teacher/settings") ? "text-green-600" : "text-gray-600"} mb-3`}
+            onClick={() => router.push("/teacher/settings")}
+          >
+            <Settings className="mr-2 h-5 w-5" /> {/* Changed icon to Settings */}
+            Settings
+          </Button>
         </nav>
 
         {/* Logout - Positioned at the bottom */}
         <div className="mb-11">
-          <Link href="/logout" passHref>
-            <Button variant="ghost" className="mb-11 w-full justify-start text-gray-600 hover:text-red-600">
-              <LogOut className="mr-2 h-5 w-5" /> {/* LogOut icon remains the same */}
-              Log out
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            className="mb-11 w-full justify-start text-gray-600 hover:text-red-600"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-5 w-5" /> {/* LogOut icon remains the same */}
+            Log out
+          </Button>
         </div>
       </div>
     </div>

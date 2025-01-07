@@ -10,9 +10,11 @@ import MySidebar from "@/components/MySidebar"; // Import MySidebar
 
 const OverviewPage = () => {
   const [projects, setProjects] = useState([]);
+  const [members, setMembers] = useState({});
+  const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
-    entreprise: null,
+    student: null,
     supervisor: null,
     date: null,
     room: null,
@@ -31,14 +33,32 @@ const OverviewPage = () => {
       }
     };
 
+    // Fetch member data from the API
+    const fetchMembers = async () => {
+      try {
+        const response = await fetch("http://localhost:5050/users/");
+        const data = await response.json();
+        const studentUsers = data.filter((user) => user.role === "STUDENT");
+        setStudents(studentUsers);
+        const memberMap = data.reduce((map, member) => {
+          map[member.id] = member.username;
+          return map;
+        }, {});
+        setMembers(memberMap);
+      } catch (error) {
+        console.error("Error fetching members:", error);
+      }
+    };
+
     fetchProjects();
+    fetchMembers();
   }, []);
 
   // Filtered projects logic
   const filteredProjects = projects.filter((project) => {
     return (
       project.title?.toLowerCase().includes(search.toLowerCase()) &&
-      (filters.entreprise ? project.entreprise === filters.entreprise : true) &&
+      (filters.student ? project.projectMembers?.includes(filters.student) : true) &&
       (filters.supervisor ? project.supervisor === filters.supervisor : true) &&
       (filters.date ? project.date === filters.date : true) &&
       (filters.room ? project.room === filters.room : true) &&
@@ -49,7 +69,7 @@ const OverviewPage = () => {
   // Function to clear all filters
   const clearFilters = () => {
     setFilters({
-      entreprise: null,
+      student: null,
       supervisor: null,
       date: null,
       room: null,
@@ -83,17 +103,19 @@ const OverviewPage = () => {
           {/* Filters */}
           <div className="flex space-x-4">
             <Select
-              value={filters.entreprise || ""}
-              onValueChange={(value) => setFilters({ ...filters, entreprise: value || null })}
+              value={filters.student || ""}
+              onValueChange={(value) => setFilters({ ...filters, student: value || null })}
             >
               <SelectTrigger className="w-32">
-                <SelectValue placeholder="Entreprise" />
+                <SelectValue placeholder="Student" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>None</SelectItem>
-                <SelectItem value="Entreprise 1">Entreprise 1</SelectItem>
-                <SelectItem value="Entreprise 2">Entreprise 2</SelectItem>
-                <SelectItem value="Entreprise 3">Entreprise 3</SelectItem>
+                {students.map((student) => (
+                  <SelectItem key={student.id} value={student.id}>
+                    {student.username}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -116,8 +138,11 @@ const OverviewPage = () => {
                 <TableRow className="text-left">
                   <TableCell className="py-4 px-6">#</TableCell>
                   <TableCell className="py-4 px-6">Title</TableCell>
+                  <TableCell className="py-4 px-6">Description</TableCell>
                   <TableCell className="py-4 px-6">Status</TableCell>
-                  <TableCell className="py-4 px-6">Created At</TableCell>
+                  <TableCell className="py-4 px-6">Location</TableCell>
+                  <TableCell className="py-4 px-6">Report URL</TableCell>
+                  <TableCell className="py-4 px-6">Members</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -125,13 +150,28 @@ const OverviewPage = () => {
                   <TableRow key={project.id}>
                     <TableCell className="py-4 px-6">{index + 1}</TableCell>
                     <TableCell className="py-4 px-6">{project.title}</TableCell>
+                    <TableCell className="py-4 px-6">{project.description || "N/A"}</TableCell>
                     <TableCell className="py-4 px-6">{project.status}</TableCell>
-                    <TableCell className="py-4 px-6">{new Date(project.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell className="py-4 px-6">{project.location || "N/A"}</TableCell>
+                    <TableCell className="py-4 px-6">
+                      {project.reportUrl ? (
+                        <a href={project.reportUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                          Report
+                        </a>
+                      ) : (
+                        "N/A"
+                      )}
+                    </TableCell>
+                    <TableCell className="py-4 px-6">
+                      {project.projectMembers?.length > 0
+                        ? project.projectMembers.map((memberId) => members[memberId] || memberId).join(", ")
+                        : "No Members"}
+                    </TableCell>
                   </TableRow>
                 ))}
                 {filteredProjects.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center py-4">
+                    <TableCell colSpan={7} className="text-center py-4">
                       No projects found.
                     </TableCell>
                   </TableRow>
