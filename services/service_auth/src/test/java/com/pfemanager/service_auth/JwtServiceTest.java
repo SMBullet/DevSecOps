@@ -1,5 +1,6 @@
 package com.pfemanager.service_auth.service;
 
+import com.pfemanager.service_auth.enums.Role;
 import com.pfemanager.service_auth.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,11 +25,12 @@ class JwtServiceTest {
 
         mockUser = new User();
         mockUser.setUsername("testUser");
+        mockUser.setRole(Role.STUDENT); // Set Role to avoid NullPointerException
     }
 
     @Test
     void generateToken_Success() {
         String token = jwtService.generateToken(mockUser);
-        assertNotNull(token);
+        assertNotNull(token); // Ensure token generation works
     }
 }
