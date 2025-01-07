@@ -7,8 +7,6 @@ import { motion } from 'framer-motion';
 import TemplatesSection from './LandingPage/TemplateSec/TemplatesSection';
 import IntegrationsSection from './LandingPage/IntegrationSec/IntergrationSection';
 import TrialSection from './LandingPage/TrialSection/TrialSection';
-import Footer from './LandingPage/footer/Footer';
-
 export const LandingPage = () => {
   return (
 
@@ -62,8 +60,7 @@ export const LandingPage = () => {
           </div>
         </div>
         <TrialSection />
-        <Footer />
-      </div>
+        </div>
     </div>
   );
 };

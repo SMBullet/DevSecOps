@@ -3,8 +3,8 @@ import InfoItem from "./InfoItem";
 import TrialButton from "./TrialButton";
 
 const infoItems = [
-  { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/64228c73c056afc906865b25ef5a037621d33b39c8f2dbe1ff0534daf33e085a?placeholderIfAbsent=true&apiKey=be1db21a3f504db6b31d0e10490cbe73", text: "The first job is free" },
-  { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/679aa027c47a2e593e979729110db0c9847975979dbace804eea64f500523b62?placeholderIfAbsent=true&apiKey=be1db21a3f504db6b31d0e10490cbe73", text: "No credit card needed" }
+  { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/64228c73c056afc906865b25ef5a037621d33b39c8f2dbe1ff0534daf33e085a?placeholderIfAbsent=true&apiKey=be1db21a3f504db6b31d0e10490cbe73", text: "easy to manage" },
+  { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/679aa027c47a2e593e979729110db0c9847975979dbace804eea64f500523b62?placeholderIfAbsent=true&apiKey=be1db21a3f504db6b31d0e10490cbe73", text: "limited access" }
 ];
 
 const TrialSection = () => {
