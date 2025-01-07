@@ -4,16 +4,15 @@ import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { User, Mail } from "lucide-react";
+import { User, Mail, Lock, Calendar, UserCheck } from "lucide-react";
 import MySidebar from "@/components/MySidebar";
-
+import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 import axios from "axios";
 
-// Define schema for the form validation using Zod
 const userSchema = z.object({
   username: z.string().min(2, { message: "Username must be at least 2 characters." }),
   dob: z.string().nonempty({ message: "Date of birth is required." }),
@@ -23,9 +22,8 @@ const userSchema = z.object({
 });
 
 export default function UsersPage() {
-  const [focusedField, setFocusedField] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Create the form methods for handling the form with React Hook Form
   const methods = useForm({
     resolver: zodResolver(userSchema),
     defaultValues: {
@@ -33,148 +31,192 @@ export default function UsersPage() {
       dob: "",
       email: "",
       password: "",
-      role: "student", // default role is "student"
+      role: "student",
     },
   });
 
-
   const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
-      const userData = {
-        username: data.username,
-        dob: data.dob,
-        email: data.email,
-        password: data.password,
-        role: data.role,
-      };
-
-      // Send the POST request to the back-end API
-      const response = await axios.post(`http://localhost:5050/auth/register`, userData);
-
-      // Handle successful response
-      console.log("User registered:", response.data);
-      // Optionally reset form or show a success message
+      const response = await axios.post(`http://localhost:5050/auth/register`, data);
+      toast.success("User created successfully!");
+      methods.reset();
     } catch (error) {
-      // Handle errors
-      console.error("Error registering user:", error);
+      toast.error(error.response?.data?.message || "Failed to create user");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full bg-gray-50">
       <MySidebar />
 
-      <div className="flex-1 w-full p-8 mx-4 my-6 bg-white rounded-3xl shadow-xl">
-        <header className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Users</h1>
-          <p className="text-gray-600">Welcome back, Admin! Check your settings and verify your information!</p>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex-1 w-full p-8 mx-4 my-6 bg-white rounded-3xl shadow-lg"
+      >
+        <header className="mb-8">
+          <motion.h1 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-3xl font-bold text-gray-800 mb-2"
+          >
+            Users Management
+          </motion.h1>
+          <p className="text-gray-600">Manage your users and their roles efficiently</p>
         </header>
 
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Create New User</h2>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <h2 className="text-xl font-semibold mb-6">Create New User</h2>
           
-          {/* Wrap the form inside FormProvider to share form context */}
           <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">
-                {/* Username Field */}
+            <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid gap-8 grid-cols-1 sm:grid-cols-2">
                 <FormField
                   control={methods.control}
                   name="username"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium">Username</FormLabel>
                       <FormControl>
-                        <div className="relative">
+                        <div className="relative transition-all duration-300 hover:shadow-sm">
                           <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the username" {...field} className="pl-10" />
+                          <Input 
+                            placeholder="Enter username" 
+                            {...field} 
+                            className="pl-10 h-11 border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent"
+                          />
                         </div>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Date of Birth Field */}
                 <FormField
                   control={methods.control}
                   name="dob"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Date of Birth</FormLabel>
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium">Date of Birth</FormLabel>
                       <FormControl>
-                        <div className="relative">
-                          <Input type="date" {...field} className="pl-10" />
+                        <div className="relative transition-all duration-300 hover:shadow-sm">
+                          <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <Input 
+                            type="date" 
+                            {...field} 
+                            className="pl-10 h-11 border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent"
+                          />
                         </div>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Email Field */}
                 <FormField
                   control={methods.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium">Email</FormLabel>
                       <FormControl>
-                        <div className="relative">
+                        <div className="relative transition-all duration-300 hover:shadow-sm">
                           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                          <Input placeholder="Enter the email address" {...field} className="pl-10" />
+                          <Input 
+                            placeholder="Enter email address" 
+                            {...field} 
+                            className="pl-10 h-11 border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent"
+                          />
                         </div>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Password Field */}
                 <FormField
                   control={methods.control}
                   name="password"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium">Password</FormLabel>
                       <FormControl>
-                        <div className="relative">
-                          <Input type="password" placeholder="Enter a secure password" {...field} className="pl-10" />
+                        <div className="relative transition-all duration-300 hover:shadow-sm">
+                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <Input 
+                            type="password" 
+                            placeholder="Enter password" 
+                            {...field} 
+                            className="pl-10 h-11 border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent"
+                          />
                         </div>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Role Dropdown */}
                 <FormField
                   control={methods.control}
                   name="role"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium">Role</FormLabel>
                       <FormControl>
-                        <div className="relative">
-                          <select {...field} className="pl-10 py-2 pr-3 border rounded-md text-gray-600">
+                        <div className="relative transition-all duration-300 hover:shadow-sm">
+                          <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <select 
+                            {...field} 
+                            className="w-full pl-10 h-11 border rounded-md border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent"
+                          >
                             <option value="student">Student</option>
                             <option value="teacher">Teacher</option>
                           </select>
                         </div>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
 
-              <div className="flex justify-end gap-4">
-                <Button type="button" variant="destructive">
+              <div className="flex justify-end gap-4 pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  className="px-6 transition-all duration-300 hover:bg-gray-50"
+                  onClick={() => methods.reset()}
+                  disabled={isLoading}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-black text-white hover:bg-gray-800">
-                  Add
+                <Button 
+                  type="submit" 
+                  className="px-6 bg-black text-white transition-all duration-300 hover:bg-gray-800 disabled:opacity-50"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="animate-spin">◌</span>
+                      Creating...
+                    </span>
+                  ) : (
+                    'Create User'
+                  )}
                 </Button>
               </div>
             </form>
           </FormProvider>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
