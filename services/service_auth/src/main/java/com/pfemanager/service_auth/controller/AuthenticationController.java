@@ -27,12 +27,33 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    
+
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
+        if (registerUserDto == null) {
+            throw new IllegalArgumentException("RegisterUserDto cannot be null");
+        }
+    
+        if (registerUserDto.getUsername() == null || registerUserDto.getUsername().trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+    
+        if (registerUserDto.getPassword() == null || registerUserDto.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+    
+        if (registerUserDto.getEmail() == null || registerUserDto.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+    
         User registeredUser = authenticationService.signup(registerUserDto);
-
+    
         return ResponseEntity.ok(registeredUser);
     }
+
+
+    
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
