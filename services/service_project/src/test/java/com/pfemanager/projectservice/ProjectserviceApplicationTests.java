@@ -7,12 +7,11 @@ import com.pfemanager.projectservice.models.Project;
 import com.pfemanager.projectservice.models.ProjectStatus;
 import com.pfemanager.projectservice.services.ProjectService;
 import com.pfemanager.projectservice.repositories.ProjectRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -21,7 +20,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ProjectserviceApplicationTests {
 
     @Mock
@@ -33,89 +32,98 @@ class ProjectserviceApplicationTests {
     @InjectMocks
     private ProjectController projectController;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
     void testCreateProject() {
-        ProjectDto projectDto = new ProjectDto();
-        Project project = new Project();
-        when(projectService.createProject(projectDto)).thenReturn(project);
+        assertDoesNotThrow(() -> {
+            ProjectDto projectDto = new ProjectDto();
+            Project project = new Project();
+            when(projectService.createProject(projectDto)).thenReturn(project);
 
-        ResponseEntity<Project> response = projectController.createProject(projectDto);
+            ResponseEntity<Project> response = projectController.createProject(projectDto);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(project, response.getBody());
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+            assertEquals(project, response.getBody());
+        }, "Error occurred in testCreateProject");
     }
 
     @Test
     void testGetProject() {
-        UUID projectId = UUID.randomUUID();
-        ProjectDetailsDto projectDetailsDto = new ProjectDetailsDto();
-        when(projectService.getProject(projectId)).thenReturn(projectDetailsDto);
+        assertDoesNotThrow(() -> {
+            UUID projectId = UUID.randomUUID();
+            ProjectDetailsDto projectDetailsDto = new ProjectDetailsDto();
+            when(projectService.getProject(projectId)).thenReturn(projectDetailsDto);
 
-        ResponseEntity<ProjectDetailsDto> response = projectController.getProject(projectId);
+            ResponseEntity<ProjectDetailsDto> response = projectController.getProject(projectId);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(projectDetailsDto, response.getBody());
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(projectDetailsDto, response.getBody());
+        }, "Error occurred in testGetProject");
     }
 
     @Test
     void testGetAllProjects() {
-        List<Project> projects = new ArrayList<>();
-        when(projectService.getAllProjects()).thenReturn(projects);
+        assertDoesNotThrow(() -> {
+            List<Project> projects = new ArrayList<>();
+            when(projectService.getAllProjects()).thenReturn(projects);
 
-        ResponseEntity<List<Project>> response = projectController.getAllProjects();
+            ResponseEntity<List<Project>> response = projectController.getAllProjects();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(projects, response.getBody());
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(projects, response.getBody());
+        }, "Error occurred in testGetAllProjects");
     }
 
     @Test
     void testUpdateProjectStatus() {
-        UUID projectId = UUID.randomUUID();
-        Project project = new Project();
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("status", "COMPLETED");
-        when(projectService.updateProjectStatus(projectId, ProjectStatus.COMPLETED)).thenReturn(project);
+        assertDoesNotThrow(() -> {
+            UUID projectId = UUID.randomUUID();
+            Project project = new Project();
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("status", "COMPLETED");
+            when(projectService.updateProjectStatus(projectId, ProjectStatus.COMPLETED)).thenReturn(project);
 
-        ResponseEntity<Project> response = projectController.updateProjectStatus(projectId, requestBody);
+            ResponseEntity<Project> response = projectController.updateProjectStatus(projectId, requestBody);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(project, response.getBody());
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(project, response.getBody());
+        }, "Error occurred in testUpdateProjectStatus");
     }
 
     @Test
     void testDeleteProject() {
-        UUID projectId = UUID.randomUUID();
-        doNothing().when(projectService).deleteProject(projectId);
+        assertDoesNotThrow(() -> {
+            UUID projectId = UUID.randomUUID();
+            doNothing().when(projectService).deleteProject(projectId);
 
-        ResponseEntity<Void> response = projectController.deleteProject(projectId);
+            ResponseEntity<Void> response = projectController.deleteProject(projectId);
 
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+            assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        }, "Error occurred in testDeleteProject");
     }
 
     @Test
     void testRepositoryFindById() {
-        UUID projectId = UUID.randomUUID();
-        Project project = new Project();
-        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        assertDoesNotThrow(() -> {
+            UUID projectId = UUID.randomUUID();
+            Project project = new Project();
+            when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
 
-        Optional<Project> foundProject = projectRepository.findById(projectId);
+            Optional<Project> foundProject = projectRepository.findById(projectId);
 
-        assertTrue(foundProject.isPresent());
-        assertEquals(project, foundProject.get());
+            assertTrue(foundProject.isPresent());
+            assertEquals(project, foundProject.get());
+        }, "Error occurred in testRepositoryFindById");
     }
 
     @Test
     void testRepositorySave() {
-        Project project = new Project();
-        when(projectRepository.save(project)).thenReturn(project);
+        assertDoesNotThrow(() -> {
+            Project project = new Project();
+            when(projectRepository.save(project)).thenReturn(project);
 
-        Project savedProject = projectRepository.save(project);
+            Project savedProject = projectRepository.save(project);
 
-        assertEquals(project, savedProject);
+            assertEquals(project, savedProject);
+        }, "Error occurred in testRepositorySave");
     }
 }
