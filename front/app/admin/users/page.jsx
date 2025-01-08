@@ -39,7 +39,7 @@ export default function UsersPage() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://localhost:5050/auth/register`, 
+        `http://128.110.219.24:5050/auth/register`, 
         data,
         {
           headers: {

@@ -26,7 +26,7 @@ const OverviewPage = () => {
     // Fetch project data from the API
     const fetchProjects = async () => {
       try {
-        const response = await fetch("http://localhost:6060/api/projects/all");
+        const response = await fetch("http://128.110.219.24:6060/api/projects/all");
         const data = await response.json();
         setProjects(data);
       } catch (error) {
@@ -37,7 +37,7 @@ const OverviewPage = () => {
     // Fetch member data from the API
     const fetchMembers = async () => {
       try {
-        const response = await fetch("http://localhost:5050/users/");
+        const response = await fetch("http://128.110.219.24:5050/users/");
         const data = await response.json();
 
         const studentUsers = data.filter((user) => user.role === "STUDENT");

@@ -12,7 +12,7 @@ const StudentInfoCard = () => {
         const token = sessionStorage.getItem('authToken');
         if (!token) throw new Error('No token found');
 
-        const response = await axios.get('http://localhost:5050/users/me', {
+        const response = await axios.get('http://128.110.219.24:5050/users/me', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -25,7 +25,7 @@ const StudentInfoCard = () => {
           email: user.email,
           dob: user.dob,
           role: user.role,
-          picture: user.picture || 'https://media.licdn.com/dms/image/v2/C4D03AQFm4vxMfPlTKg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1632831843821?e=1741824000&v=beta&t=lxIbC-PDoUg_DKZSpqdzefl_v2dZBfSUuNK_S10psrI',
+          picture: user.picture || 'https://static.vecteezy.com/system/resources/thumbnails/049/462/170/small_2x/anonymous-man-in-black-hoodie-with-hooded-face-evoking-mystery-and-intrigue-in-dark-setting-photo.jpeg',
         });
       } catch (error) {
         console.error('Error fetching student info:', error);

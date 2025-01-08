@@ -153,7 +153,7 @@ function GoogleButton() {
     auth2.signIn().then(googleUser => {
       const id_token = googleUser.getAuthResponse().id_token;
       // Send token to your backend
-      fetch('http://localhost:5050/auth/google', {
+      fetch('http://128.110.219.24:5050/auth/google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -196,7 +196,7 @@ function LoginForm({ onForgotPassword }) {
     const password = e.target.password.value;
   
     try {
-      const response = await fetch('http://localhost:5050/auth/login', {
+      const response = await fetch('http://128.110.219.24:5050/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

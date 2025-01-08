@@ -19,7 +19,7 @@ const StudentPage = () => {
         if (!token) throw new Error("No token found");
 
         // Fetch user data
-        const userResponse = await axios.get("http://localhost:5050/users/me", {
+        const userResponse = await axios.get("http://128.110.219.24:5050/users/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -29,7 +29,7 @@ const StudentPage = () => {
         setUserId(userId);
 
         // Fetch all projects
-        const projectsResponse = await axios.get("http://localhost:6060/api/projects/all", {
+        const projectsResponse = await axios.get("http://128.110.219.24:6060/api/projects/all", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -18,7 +18,7 @@ const SettingsPage = () => {
         const token = sessionStorage.getItem("authToken");
         if (!token) throw new Error("No token found");
 
-        const response = await axios.get("http://localhost:5050/users/me", {
+        const response = await axios.get("http://128.110.219.24:5050/users/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

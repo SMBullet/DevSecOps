@@ -41,7 +41,7 @@ export default function AddProjectPage() {
     // Fetch students from the API
     const fetchStudents = async () => {
       try {
-        const response = await axios.get("http://localhost:5050/users/");
+        const response = await axios.get("http://128.110.219.24:5050/users/");
         const studentUsers = response.data.filter((user) => user.role === "STUDENT");
         setStudents(studentUsers);
       } catch (error) {
@@ -52,7 +52,7 @@ export default function AddProjectPage() {
     // Fetch teachers from the API
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get("http://localhost:5050/users/");
+        const response = await axios.get("http://128.110.219.24:5050/users/");
         const teacherUsers = response.data.filter((user) => user.role === "TEACHER");
         setTeachers(teacherUsers);
       } catch (error) {
@@ -82,7 +82,7 @@ export default function AddProjectPage() {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      await axios.post("http://localhost:6060/api/projects/createproject", data);
+      await axios.post("http://128.110.219.24:6060/api/projects/createproject", data);
       toast.success("Project created successfully!");
       form.reset();
     } catch (error) {
