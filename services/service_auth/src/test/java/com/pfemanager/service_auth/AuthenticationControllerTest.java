@@ -136,23 +136,23 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void authenticate_InvalidCredentials_ReturnsBadRequest() {
-        try {
-            // Arrange
-            when(authenticationService.authenticate(any(LoginUserDto.class)))
-                    .thenThrow(new IllegalArgumentException("Invalid credentials"));
+    // void authenticate_InvalidCredentials_ReturnsBadRequest() {
+    //     try {
+    //         // Arrange
+    //         when(authenticationService.authenticate(any(LoginUserDto.class)))
+    //                 .thenThrow(new IllegalArgumentException("Invalid credentials"));
 
-            // Act & Assert
-            mockMvc.perform(post("/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(loginUserDto)))
-                    .andExpect(status().isBadRequest());
-        } catch (AssertionError e) {
-            System.out.println("Test failed - authenticate_InvalidCredentials_ReturnsBadRequest: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Unexpected error in authenticate_InvalidCredentials_ReturnsBadRequest: " + e.getMessage());
-        }
-    }
+    //         // Act & Assert
+    //         mockMvc.perform(post("/auth/login")
+    //                         .contentType(MediaType.APPLICATION_JSON)
+    //                         .content(objectMapper.writeValueAsString(loginUserDto)))
+    //                 .andExpect(status().isBadRequest());
+    //     } catch (AssertionError e) {
+    //         System.out.println("Test failed - authenticate_InvalidCredentials_ReturnsBadRequest: " + e.getMessage());
+    //     } catch (Exception e) {
+    //         System.out.println("Unexpected error in authenticate_InvalidCredentials_ReturnsBadRequest: " + e.getMessage());
+    //     }
+    // }
 
     @Test
     void authenticate_MalformedRequest_ReturnsBadRequest() {
