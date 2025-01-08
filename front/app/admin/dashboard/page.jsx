@@ -12,6 +12,7 @@ const OverviewPage = () => {
   const [projects, setProjects] = useState([]);
   const [members, setMembers] = useState({});
   const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
     student: null,
@@ -38,8 +39,13 @@ const OverviewPage = () => {
       try {
         const response = await fetch("http://localhost:5050/users/");
         const data = await response.json();
+
         const studentUsers = data.filter((user) => user.role === "STUDENT");
         setStudents(studentUsers);
+
+        const teacherUsers = data.filter((user) => user.role === "TEACHER");
+        setTeachers(teacherUsers);
+
         const memberMap = data.reduce((map, member) => {
           map[member.id] = member.username;
           return map;
@@ -59,7 +65,7 @@ const OverviewPage = () => {
     return (
       project.title?.toLowerCase().includes(search.toLowerCase()) &&
       (filters.student ? project.projectMembers?.includes(filters.student) : true) &&
-      (filters.supervisor ? project.supervisor === filters.supervisor : true) &&
+      (filters.supervisor ? project.projectTeachers?.includes(filters.supervisor) : true) &&
       (filters.date ? project.date === filters.date : true) &&
       (filters.room ? project.room === filters.room : true) &&
       (filters.degree ? project.degree === filters.degree : true)
@@ -143,6 +149,7 @@ const OverviewPage = () => {
                   <TableCell className="py-4 px-6">Location</TableCell>
                   <TableCell className="py-4 px-6">Report URL</TableCell>
                   <TableCell className="py-4 px-6">Members</TableCell>
+                  <TableCell className="py-4 px-6">Supervisors</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -163,15 +170,26 @@ const OverviewPage = () => {
                       )}
                     </TableCell>
                     <TableCell className="py-4 px-6">
-                      {project.projectMembers?.length > 0
-                        ? project.projectMembers.map((memberId) => members[memberId] || memberId).join(", ")
+                      {project.projectMembers?.filter((id) => students.some((s) => s.id === id)).length > 0
+                        ? project.projectMembers
+                            .filter((id) => students.some((s) => s.id === id))
+                            .map((memberId) => members[memberId] || memberId)
+                            .join(", ")
                         : "No Members"}
+                    </TableCell>
+                    <TableCell className="py-4 px-6">
+                      {project.projectMembers?.filter((id) => teachers.some((t) => t.id === id)).length > 0
+                        ? project.projectMembers
+                            .filter((id) => teachers.some((t) => t.id === id))
+                            .map((teacherId) => members[teacherId] || teacherId)
+                            .join(", ")
+                        : "No Supervisors"}
                     </TableCell>
                   </TableRow>
                 ))}
                 {filteredProjects.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-4">
+                    <TableCell colSpan={8} className="text-center py-4">
                       No projects found.
                     </TableCell>
                   </TableRow>

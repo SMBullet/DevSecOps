@@ -21,11 +21,11 @@ const initialConversations = [
     id: 1,
     participants: ["Mehdi Stoti", "You"], // Conversation with Mehdi Stoti
     participantsPhotos: [
-      "https://via.placeholder.com/40", // Mehdi's photo
+      "https://media.licdn.com/dms/image/v2/D4E35AQEIuWCAVgFAZw/profile-framedphoto-shrink_800_800/profile-framedphoto-shrink_800_800/0/1728007026055?e=1736902800&v=beta&t=5FaGJYEnqxhQLEixwltj6EiOr7IXKh1ahkjkwKpldO8", // Mehdi's photo
       "https://via.placeholder.com/40", // Your photo
     ],
     messages: [
-      { sender: "Mehdi Stoti", message: "Hey Brahim, how are you?" },
+      { sender: "Mehdi Stoti", message: "Hey Hakim, how are you?" },
       { sender: "You", message: "I'm doing well, thanks! How about you?" },
       { sender: "Mehdi Stoti", message: "Good to hear! Just wanted to check in on the project progress." },
       { sender: "You", message: "Everything is on track, I'll send you an update soon." },
@@ -35,11 +35,11 @@ const initialConversations = [
     id: 2,
     participants: ["Omar Achbarou", "You"], // Conversation with Omar Achbarou
     participantsPhotos: [
-      "https://via.placeholder.com/40", // Omar's photo
+      "https://media.licdn.com/dms/image/v2/C4D03AQFm4vxMfPlTKg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1632831843821?e=1741824000&v=beta&t=lxIbC-PDoUg_DKZSpqdzefl_v2dZBfSUuNK_S10psrI", // Omar's photo
       "https://via.placeholder.com/40", // Your photo
     ],
     messages: [
-      { sender: "Omar Achbarou", message: "Brahim, are you available for a quick chat?" },
+      { sender: "Omar Achbarou", message: "Hakim, are you available for a quick chat?" },
       { sender: "You", message: "Sure, what's up?" },
       { sender: "Omar Achbarou", message: "I need some help with a few things for the project." },
       { sender: "You", message: "Of course, let me know what you need help with." },
@@ -128,7 +128,7 @@ const MessagesPage = () => {
           {/* Welcome Section */}
           <div className="p-6 border-b border-gray-200">
             <h1 className="text-2xl font-bold text-gray-800">Messages</h1>
-            <p className="text-gray-600">Hello Brahim, check your messages</p>
+            <p className="text-gray-600">Hello Hakim, check your messages</p>
           </div>
 
           {/* Search Bar */}

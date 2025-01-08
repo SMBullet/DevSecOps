@@ -5,9 +5,16 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Clipboard, Calendar, MapPin, Award } from "lucide-react";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import MySidebar from "@/components/MySidebar";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -16,7 +23,8 @@ import axios from "axios";
 const formSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }),
   description: z.string().optional(),
-  projectMembers: z.array(z.string().uuid()).optional(),
+  projectMembers: z.array(z.string()).optional(),
+  projectTeachers: z.array(z.string()).optional(),
   status: z.string().min(1, { message: "Status is required." }),
   location: z.string().optional(),
   projectTime: z.string().optional(),
@@ -27,6 +35,7 @@ const formSchema = z.object({
 export default function AddProjectPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
     // Fetch students from the API
@@ -40,7 +49,19 @@ export default function AddProjectPage() {
       }
     };
 
+    // Fetch teachers from the API
+    const fetchTeachers = async () => {
+      try {
+        const response = await axios.get("http://localhost:5050/users/");
+        const teacherUsers = response.data.filter((user) => user.role === "TEACHER");
+        setTeachers(teacherUsers);
+      } catch (error) {
+        toast.error("Failed to fetch teachers");
+      }
+    };
+
     fetchStudents();
+    fetchTeachers();
   }, []);
 
   const form = useForm({
@@ -49,6 +70,7 @@ export default function AddProjectPage() {
       title: "",
       description: "",
       projectMembers: [],
+      projectTeachers: [],
       status: "IN_PROGRESS",
       location: "",
       projectTime: "",
@@ -58,10 +80,9 @@ export default function AddProjectPage() {
   });
 
   const onSubmit = async (data) => {
-    console.log("Submitting data:", data); // Debugging: log submitted data
     setIsLoading(true);
     try {
-      const response = await axios.post("http://localhost:6060/api/projects/createproject", data);
+      await axios.post("http://localhost:6060/api/projects/createproject", data);
       toast.success("Project created successfully!");
       form.reset();
     } catch (error) {
@@ -191,41 +212,61 @@ export default function AddProjectPage() {
                     </FormItem>
                   )}
                 />
-
-                <FormField
-                  control={form.control}
-                  name="projectMembers"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">Project Members</FormLabel>
-                      <FormControl>
-                        <div className="space-y-2">
-                          {students.map((student) => (
-                            <div
-                              key={student.id}
-                              className="p-2 border rounded cursor-pointer hover:bg-gray-100"
-                              onClick={() => {
-                                const members = [...field.value];
-                                if (members.includes(student.id)) {
-                                  field.onChange(members.filter((id) => id !== student.id));
-                                } else {
-                                  field.onChange([...members, student.id]);
-                                }
-                              }}
-                              style={{
-                                backgroundColor: field.value.includes(student.id) ? "#d1fae5" : "white",
-                              }}
-                            >
-                              {student.username}
-                            </div>
-                          ))}
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
+
+              <FormField
+                control={form.control}
+                name="projectMembers"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-sm font-medium">Add Students</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange([...field.value, value])}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select students" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {students.map((student) => (
+                          <SelectItem key={student.id} value={student.id}>
+                            {student.username}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="projectTeachers"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-sm font-medium">Add Teachers</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange([...field.value, value]);
+                        form.setValue("projectMembers", [
+                          ...form.getValues("projectMembers"),
+                          value,
+                        ]);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select teachers" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {teachers.map((teacher) => (
+                          <SelectItem key={teacher.id} value={teacher.id}>
+                            {teacher.username}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
 
               <div className="flex justify-end gap-4 pt-4">
                 <Button

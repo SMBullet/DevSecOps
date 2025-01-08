@@ -23,7 +23,9 @@ const StudentInfoCard = () => {
         setStudentInfo({
           username: user.username,
           email: user.email,
-          picture: user.picture || 'https://via.placeholder.com/150',
+          dob: user.dob,
+          role: user.role,
+          picture: user.picture || 'https://media.licdn.com/dms/image/v2/C4D03AQFm4vxMfPlTKg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1632831843821?e=1741824000&v=beta&t=lxIbC-PDoUg_DKZSpqdzefl_v2dZBfSUuNK_S10psrI',
         });
       } catch (error) {
         console.error('Error fetching student info:', error);
@@ -54,6 +56,14 @@ const StudentInfoCard = () => {
         <div>
           <p className="font-semibold text-lg">Email:</p>
           <p className="text-sm">{studentInfo.email}</p>
+        </div>
+        <div>
+          <p className="font-semibold text-lg">Date of Birth:</p>
+          <p className="text-sm">{studentInfo.dob}</p>
+        </div>
+        <div>
+          <p className="font-semibold text-lg">Role:</p>
+          <p className="text-sm">{studentInfo.role}</p>
         </div>
       </div>
     </div>

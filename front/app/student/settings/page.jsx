@@ -9,7 +9,7 @@ import { User2, Mail, Phone, GraduationCap } from "lucide-react"; // Add this im
 import axios from "axios";
 
 const SettingsPage = () => {
-  const [studentInfo, setStudentInfo] = useState({ username: "", email: "", phone: "+123 456 789", major: "GCDSTE" });
+  const [studentInfo, setStudentInfo] = useState({ username: "", email: "", phone: "+212 678450932", major: "GCDSTE" });
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {

@@ -1,26 +1,82 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import TeacherSidebar from "@/components/TeacherSidebar"; // Import Sidebar
-import StudentInfoCard from "@/components/StudentInfoCard"; // Import the new StudentInfoCard component
-// Dummy data for the student
-const pfe = {
-  title: "Platform of end of studies management",
-  supervisor: "O.Achbarou",
-  degree: "GCDSTE",
-  entreprise: "Entreprise 1",
-};
+import TeacherSidebar from "@/components/TeacherSidebar";
+import StudentInfoCard from "@/components/StudentInfoCard";
 
-const studentInfo = {
-  name: "Brahim KINIOUI",
-  picture: "https://via.placeholder.com/150", // Placeholder for student picture
-  major: "GCDSTE",
-  email: "brahim.kinoui@email.com",
-  phone: "+123 456 789",
-};
+const TeacherPage = () => {
+  const [userId, setUserId] = useState(null);
+  const [userProjects, setUserProjects] = useState([]);
+  const [membersData, setMembersData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-const StudentPage = () => {
+  useEffect(() => {
+    const fetchTeacherProjects = async () => {
+      try {
+        const token = sessionStorage.getItem("authToken");
+        if (!token) throw new Error("No token found");
+
+        // Fetch user data
+        const userResponse = await axios.get("http://localhost:5050/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userId = userResponse.data.user.id;
+        setUserId(userId);
+
+        // Fetch all projects
+        const projectsResponse = await axios.get("http://localhost:6060/api/projects/all", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const projects = projectsResponse.data;
+
+        // Fetch all members
+        const membersResponse = await axios.get("http://localhost:5050/users/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const members = membersResponse.data.reduce((acc, member) => {
+          acc[member.id] = member.username;
+          return acc;
+        }, {});
+
+        setMembersData(members);
+
+        // Filter projects associated with the teacher
+        const teacherProjects = projects.filter((project) =>
+          project.projectMembers.includes(userId)
+        );
+
+        setUserProjects(teacherProjects);
+      } catch (err) {
+        console.error("Error fetching projects:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTeacherProjects();
+  }, []);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+  }
+
   return (
     <div className="flex min-h-screen w-full">
       {/* Sidebar */}
@@ -28,54 +84,78 @@ const StudentPage = () => {
 
       {/* Main Content */}
       <div className="flex-1 w-full p-6 mx-4 my-6 rounded-3xl shadow-lg flex bg-white">
-        {/* Left Section (Project Information) */}
+        {/* Left Section (Projects Information) */}
         <div className="flex-1 p-6">
           {/* Header */}
           <header className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">Your PFE Overview</h1>
-            <p className="text-gray-600">Check your project details below.</p>
+            <h1 className="text-3xl font-bold text-gray-800">Projects You Are Supervising</h1>
+            <p className="text-gray-600">Check the details of all projects you are supervising below.</p>
           </header>
 
-          {/* Content Card */}
-          <Card className="bg-white rounded-xl border-none shadow-none p-0">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold text-gray-700">Your PFE Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {/* Title */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">Title:</p>
-                  <p className="text-gray-600">{pfe.title}</p>
-                </div>
+          {/* Projects Cards */}
+          {userProjects.length > 0 ? (
+            <div className="space-y-4">
+              {userProjects.map((project) => (
+                <Card
+                  key={project.id}
+                  className="bg-white rounded-xl border shadow-md p-4 h-auto"
+                >
+                  <CardHeader>
+                    <CardTitle className="text-xl font-semibold text-gray-800 mb-2">
+                      {project.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {/* Description */}
+                    <div>
+                      <p className="text-lg font-medium text-gray-700">Description:</p>
+                      <p className="text-gray-600 text-sm">{project.description || "No description available"}</p>
+                    </div>
 
-                {/* Supervisor */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">Supervisor:</p>
-                  <p className="text-gray-600">{pfe.supervisor}</p>
-                </div>
+                    {/* Location */}
+                    <div>
+                      <p className="text-lg font-medium text-gray-700">Location:</p>
+                      <p className="text-gray-600 text-sm">{project.location || "No location specified"}</p>
+                    </div>
 
-                {/* Degree */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">Degree:</p>
-                  <p className="text-gray-600">{pfe.degree}</p>
-                </div>
+                    {/* Report URL */}
+                    {project.reportUrl && (
+                      <div>
+                        <p className="text-lg font-medium text-gray-700">Report:</p>
+                        <a
+                          href={project.reportUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline text-sm"
+                        >
+                          View Report
+                        </a>
+                      </div>
+                    )}
 
-                {/* Company */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800">Company:</p>
-                  <p className="text-gray-600">{pfe.entreprise}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                    {/* Members */}
+                    <div>
+                      <p className="text-lg font-medium text-gray-700">Members:</p>
+                      <p className="text-gray-600 text-sm">
+                        {project.projectMembers.length > 0
+                          ? project.projectMembers.map((memberId) => membersData[memberId] || memberId).join(", ")
+                          : "No members assigned"}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600">You are not supervising any projects at the moment.</p>
+          )}
         </div>
 
-        {/* Right Section (Student Info with Gradient) */}
-        <StudentInfoCard studentInfo={studentInfo} /> {/* Use the imported component */}
+        {/* Right Section (Teacher Info with Gradient) */}
+        <StudentInfoCard />
       </div>
     </div>
   );
 };
 
-export default StudentPage;
+export default TeacherPage;
