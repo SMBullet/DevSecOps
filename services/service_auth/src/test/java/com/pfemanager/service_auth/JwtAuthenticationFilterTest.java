@@ -146,7 +146,7 @@ class JwtAuthenticationFilterTest {
     //     } catch (Exception e) {
     //         System.out.println("Unexpected error in doFilterInternal_InvalidToken_Returns401: " + e.getMessage());
     //     }
-    }
+    // }
 
     @Test
     void doFilterInternal_ValidTokenButExpired_Returns401() {
