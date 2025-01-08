@@ -6,7 +6,7 @@
 #   namespace: default
 # spec:
 #   mtls:
-#     mode: STRICT
+#     mode: STRICTs
 
 
 # Auth Deployment
