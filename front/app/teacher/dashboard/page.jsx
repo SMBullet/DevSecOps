@@ -39,7 +39,7 @@ const TeacherPage = () => {
         const projects = projectsResponse.data;
 
         // Fetch all members
-        const membersResponse = await axios.get("http://localhost:5050/users/", {
+        const membersResponse = await axios.get("http://128.110.219.24:5050/users/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
