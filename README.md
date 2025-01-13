@@ -61,10 +61,14 @@ Our **Jenkins CI/CD pipeline** automates the entire build, test, and deployment 
 2. **Build** the application using **Maven**.
 3. **Static Code Analysis** with **SonarQube**.
 4. **Security Scanning** of Docker images using **Trivy**.
-5. **Containerization** with Docker.
-6. **Deployment** to a **Kubernetes** cluster.
+5. **Dynamic Code Analysis** of Docker images using **OWASP ZAP**.
+6. **Containerization** with **Docker**.
+7. **Artifacts Storage** with **Sonatype Nexus Repository**.
+8. **Deployment** to a **Kubernetes** cluster.
 
-![Jenkins Pipeline](./screenshots/jenkins-pipeline.png)
+**Full Jenkins Pipeline** ![Jenkins Pipeline](./Jenkinsfile)
+
+**Jenkins CI/CD pipeline Preview :** : ![Jenkins Pipeline](./screenshots/pipeline.png)
 
 ---
 
@@ -95,7 +99,12 @@ We followed the **Agile methodology** throughout the project. Tasks were broken 
 ## Screenshots
 
 ### Application Interface
-![Application UI](./screenshots/application-ui.png)
+![Application UI](./screenshots/application-ui1.png)
+![Application UI](./screenshots/application-ui2.png)
+![Application UI](./screenshots/application-ui3.png)
+![Application UI](./screenshots/application-ui4.png)
+![Application UI](./screenshots/application-ui5.png)
+![Application UI](./screenshots/application-ui6.png)
 
-### Jenkins Pipeline Stages
-![Jenkins Pipeline](./screenshots/jenkins-pipeline.png)
+
+
